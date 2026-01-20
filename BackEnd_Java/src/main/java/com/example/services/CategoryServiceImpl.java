@@ -1,4 +1,4 @@
-package com.example.serviceimpl;
+package com.example.services;
 
 import com.example.dto.CategoryDTO;
 
@@ -6,7 +6,6 @@ import com.example.dto.CategoryDTO;
 import com.example.entities.CategoryMaster;
 import com.example.repositories.CategoryRepository;
 
-import com.example.services.CategoryService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

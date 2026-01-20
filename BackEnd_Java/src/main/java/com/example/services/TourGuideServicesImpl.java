@@ -1,10 +1,8 @@
-package com.example.serviceimpl;
+package com.example.services;
 
 import com.example.dto.TourGuideDTO;
 import com.example.entities.TourGuide;
-import com.example.entities.TourMaster;
 import com.example.repositories.TourGuideRepository;
-import com.example.services.TourGuideServices;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
