@@ -1,1 +1,32 @@
-Welcome To My YouTube channel 
+How to Used the GitHub
+
+
+git init 
+
+Add GitHub repo as remote
+
+	git remote add origin https://github.com/USERNAME/REPO_NAME.git
+
+Since local and GitHub are separate histories:
+
+	git pull origin main --allow-unrelated-histories
+
+
+Add your local files
+	git add .
+
+Commit local code
+
+	git commit -m "Added local project files"
+
+Push everything to GitHub
+
+	git push -u origin main
+
+
+
+
+
+
+
+
