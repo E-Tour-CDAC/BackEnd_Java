@@ -14,3 +14,6 @@ target/
 
 # OS
 .DS_Store
+
+# Local env files
+application-local.properties
