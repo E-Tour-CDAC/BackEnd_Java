@@ -2,7 +2,8 @@ package com.example.services;
 
 import com.example.dto.CategoryDTO;
 
-import com.example.entites.CategoryMaster;
+
+import com.example.entities.CategoryMaster;
 import com.example.repositories.CategoryRepository;
 
 import org.springframework.stereotype.Service;
