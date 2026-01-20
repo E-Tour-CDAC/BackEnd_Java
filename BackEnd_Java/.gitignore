@@ -1,5 +1,6 @@
 # Maven
 target/
+build/
 
 # Eclipse / STS
 .project
@@ -8,6 +9,8 @@ target/
 
 # IntelliJ
 .idea/
+*.iml
+out/
 
 # VS Code
 .vscode/
