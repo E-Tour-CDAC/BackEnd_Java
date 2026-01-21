@@ -1,10 +1,8 @@
-package com.example.serviceimpl;
-import java.util.List;
+package com.example.services;
 import com.example.entities.BookingHeader;
 import com.example.entities.PaymentMaster;
 import com.example.repositories.BookingRepository;
 import com.example.repositories.PaymentRepository;
-import com.example.services.PaymentService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
