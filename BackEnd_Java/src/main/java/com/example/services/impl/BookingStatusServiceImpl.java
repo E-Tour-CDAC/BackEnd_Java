@@ -1,4 +1,4 @@
-package com.example.services;
+package com.example.services.impl;
 
 public class BookingStatusServiceImpl {
 
