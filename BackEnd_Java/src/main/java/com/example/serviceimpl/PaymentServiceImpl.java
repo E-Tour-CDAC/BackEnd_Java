@@ -1,5 +1,5 @@
 package com.example.serviceimpl;
-
+import java.util.List;
 import com.example.entities.BookingHeader;
 import com.example.entities.PaymentMaster;
 import com.example.repositories.BookingRepository;
@@ -86,9 +86,11 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public PaymentMaster getSuccessfulPayment(Integer bookingId) {
-        return paymentRepository.findByBooking_Id(bookingId).stream()
+        return paymentRepository.findByBooking_Id(bookingId)
+                .stream()
                 .filter(p -> "SUCCESS".equalsIgnoreCase(p.getPaymentStatus()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("No successful payment found"));
     }
+
 }
