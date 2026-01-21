@@ -1,23 +1,11 @@
-# Maven
+# Maven / Java
 target/
-build/
+*.class
 
-# Eclipse / STS
-.project
-.classpath
-.settings/
-
-# IntelliJ
+# IDE
 .idea/
-*.iml
-out/
-application-dev.properties
+.settings/
+.classpath
+.project
 
-# VS Code
-.vscode/
-
-# OS
-.DS_Store
-
-# Local env files
-application-local.properties
+src/main/resources/application-local.properties
