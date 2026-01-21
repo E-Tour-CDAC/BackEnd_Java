@@ -9,3 +9,5 @@ target/
 .project
 
 src/main/resources/application-local.properties
+
+bin/
