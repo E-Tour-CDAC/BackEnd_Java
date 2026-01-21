@@ -33,7 +33,7 @@ public class SearchController {
     public List<SearchResultDTO> searchByCost(
             @RequestParam BigDecimal minCost,
             @RequestParam BigDecimal maxCost
-    ) {
+    ) {o
         return searchService.searchByCost(minCost, maxCost);
     }
 
