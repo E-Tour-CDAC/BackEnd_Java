@@ -1,10 +1,12 @@
-package com.example.services;
+package com.example.services.impl;
+
 
 import com.example.dto.PaymentDTO;
 import com.example.entities.BookingHeader;
 import com.example.entities.PaymentMaster;
 import com.example.repositories.BookingRepository;
 import com.example.repositories.PaymentRepository;
+import com.example.services.PaymentService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -63,17 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentDate(Instant.now());
 
         // 6️⃣ Save payment
-        PaymentMaster savedPayment = paymentRepository.save(payment);
-
-        // 🔕 TEMP: Booking status update disabled (to be implemented future)
-        /*
-        if ("SUCCESS".equalsIgnoreCase(paymentStatus)) {
-            booking.setStatusId(2); // PAID
-            bookingRepository.save(booking);
-        }
-        */
-
-        return savedPayment;
+        return paymentRepository.save(payment);
     }
 
     @Override
@@ -91,11 +83,10 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new RuntimeException("No successful payment found"));
     }
 
-    // DTO Mapper
+    // ✅ DTO MAPPER
     public PaymentDTO mapToDTO(PaymentMaster payment) {
 
         PaymentDTO dto = new PaymentDTO();
-
         dto.setPaymentId(payment.getId());
         dto.setPaymentAmount(payment.getPaymentAmount());
         dto.setPaymentStatus(payment.getPaymentStatus());

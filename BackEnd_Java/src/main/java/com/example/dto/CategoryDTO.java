@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+
 public class CategoryDTO {
 
     private String catCode;
@@ -54,4 +54,6 @@ public class CategoryDTO {
     public void setChildren(List<CategoryDTO> children) {
         this.children = children;
     }
+
+
 }

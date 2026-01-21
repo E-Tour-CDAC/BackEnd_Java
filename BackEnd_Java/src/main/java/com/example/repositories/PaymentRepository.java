@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-
 public interface PaymentRepository extends JpaRepository<PaymentMaster, Integer> {
 
     boolean existsByBooking_IdAndPaymentStatus(Integer bookingId, String paymentStatus);
