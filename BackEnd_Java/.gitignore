@@ -1,0 +1,21 @@
+# Maven
+target/
+
+# Compiled class files
+*.class
+
+# Logs
+*.log
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
