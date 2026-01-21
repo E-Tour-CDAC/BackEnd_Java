@@ -9,18 +9,11 @@ import lombok.Setter;
 
 import java.util.Set;
 
-<<<<<<< HEAD
-@Getter
-@Setter
-=======
->>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerModel {
 
-<<<<<<< HEAD
-    public Integer getId() {
-=======
     private Integer id;
 
     private String email;
@@ -43,119 +36,91 @@ public class CustomerModel {
 
     private Set<BookingHeader> bookingHeaders;
 
-	public Integer getId() {
->>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
-		return id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public String getCustomerRole() {
-		return customerRole;
-	}
+    public String getCustomerRole() {
+        return customerRole;
+    }
 
-	public void setCustomerRole(String customerRole) {
-		this.customerRole = customerRole;
-	}
+    public void setCustomerRole(String customerRole) {
+        this.customerRole = customerRole;
+    }
 
-	public String getAuthProvider() {
-		return authProvider;
-	}
+    public String getAuthProvider() {
+        return authProvider;
+    }
 
-	public void setAuthProvider(String authProvider) {
-		this.authProvider = authProvider;
-	}
+    public void setAuthProvider(String authProvider) {
+        this.authProvider = authProvider;
+    }
 
-	public Boolean getProfileCompleted() {
-		return profileCompleted;
-	}
+    public Boolean getProfileCompleted() {
+        return profileCompleted;
+    }
 
-	public void setProfileCompleted(Boolean profileCompleted) {
-		this.profileCompleted = profileCompleted;
-	}
+    public void setProfileCompleted(Boolean profileCompleted) {
+        this.profileCompleted = profileCompleted;
+    }
 
-	public Set<BookingHeader> getBookingHeaders() {
-		return bookingHeaders;
-	}
+    public Set<BookingHeader> getBookingHeaders() {
+        return bookingHeaders;
+    }
 
-	public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
-		this.bookingHeaders = bookingHeaders;
-	}
-<<<<<<< HEAD
-
-	private Integer id;
-
-    private String email;
-
-    private String phone;
-
-    private String address;
-
-    private String firstName;
-
-    private String lastName;
-
-    private String password;
-
-    private String customerRole;
-
-    private String authProvider;
-
-    private Boolean profileCompleted;
-
-    private Set<BookingHeader> bookingHeaders;
-=======
-    
-    
->>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
+    public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
+        this.bookingHeaders = bookingHeaders;
+    }
 }
