@@ -1,6 +1,11 @@
+# Maven / Java
 target/
 *.class
+
+# IDE
 .idea/
+.settings/
 .classpath
 .project
-.settings/
+
+src/main/resources/application-local.properties
