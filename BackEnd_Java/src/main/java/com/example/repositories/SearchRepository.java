@@ -5,19 +5,17 @@ import com.example.entities.TourMaster;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-<<<<<<< HEAD
-=======
 import org.springframework.stereotype.Repository;
->>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
+
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-<<<<<<< HEAD
 
-=======
+
+
 @Repository
->>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
+
 public interface SearchRepository extends JpaRepository<TourMaster, Integer> {
 
     // 🔹 SEARCH BY DURATION
