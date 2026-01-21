@@ -10,13 +10,14 @@ import com.example.dto.CategoryDTO;
 import com.example.dto.TourGuideDTO;
 import com.example.services.CategoryService;
 import com.example.services.TourGuideServices;
+import com.example.services.TourService;
 
 @RestController
 @RequestMapping("/home")
 public class HomeController {
 
 	private final CategoryService categoryService;
-	private final TourGuideServices tourGuideServices;
+	private final TourService tourService;
 
 	public HomeController(CategoryService categoryService, TourGuideServices tourGuideServices) {
 		this.categoryService = categoryService;
