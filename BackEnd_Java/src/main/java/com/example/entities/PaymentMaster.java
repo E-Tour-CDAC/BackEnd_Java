@@ -33,9 +33,9 @@ public class PaymentMaster {
     @Column(name = "payment_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal paymentAmount;
 
-    @Lob
-    @Column(name = "payment_status", nullable = false)
+    @Column(name = "payment_status", length = 20, nullable = false)
     private String paymentStatus;
+
 
     public Integer getId() {
         return id;
