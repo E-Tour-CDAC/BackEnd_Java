@@ -1,7 +1,9 @@
 package com.example.controller;
 
+import com.example.dto.PaymentDTO;
 import com.example.entities.PaymentMaster;
 import com.example.services.PaymentService;
+import com.example.services.PaymentServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,34 +11,43 @@ import org.springframework.web.bind.annotation.*;
 public class PaymentController {
 
     private final PaymentService paymentService;
+    private final PaymentServiceImpl paymentServiceImpl;
 
-    public PaymentController(PaymentService paymentService) {
+    public PaymentController(PaymentService paymentService,
+                             PaymentServiceImpl paymentServiceImpl) {
         this.paymentService = paymentService;
+        this.paymentServiceImpl = paymentServiceImpl;
     }
 
     @PostMapping("/pay")
-    public PaymentMaster pay(@RequestParam Integer bookingId,
-                             @RequestParam String paymentMode,
-                             @RequestParam String transactionRef,
-                             @RequestParam String paymentStatus,
-                             @RequestParam String paymentAmount) {
+    public PaymentDTO pay(@RequestParam Integer bookingId,
+                          @RequestParam String paymentMode,
+                          @RequestParam String transactionRef,
+                          @RequestParam String paymentStatus,
+                          @RequestParam String paymentAmount) {
 
-        return paymentService.makePayment(
+        PaymentMaster payment = paymentService.makePayment(
                 bookingId,
                 paymentMode,
                 transactionRef,
                 paymentStatus,
                 paymentAmount
         );
+
+        return paymentServiceImpl.mapToDTO(payment);
     }
 
     @GetMapping("/{paymentId}")
-    public PaymentMaster getPayment(@PathVariable Integer paymentId) {
-        return paymentService.getPaymentById(paymentId);
+    public PaymentDTO getPayment(@PathVariable Integer paymentId) {
+
+        PaymentMaster payment = paymentService.getPaymentById(paymentId);
+        return paymentServiceImpl.mapToDTO(payment);
     }
 
     @GetMapping("/receipt/{bookingId}")
-    public PaymentMaster getReceipt(@PathVariable Integer bookingId) {
-        return paymentService.getSuccessfulPayment(bookingId);
+    public PaymentDTO getReceipt(@PathVariable Integer bookingId) {
+
+        PaymentMaster payment = paymentService.getSuccessfulPayment(bookingId);
+        return paymentServiceImpl.mapToDTO(payment);
     }
 }
