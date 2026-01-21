@@ -33,6 +33,9 @@ public class CustomerDTO {
     @NotBlank(message = "Password is required")
     private String password;
 
+<<<<<<< HEAD
+    public Integer getId() {
+=======
     private String customerRole;
 
     private String authProvider;
@@ -42,6 +45,7 @@ public class CustomerDTO {
     private Set<BookingHeader> bookingHeaders;
 
 	public Integer getId() {
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 		return id;
 	}
 
@@ -128,6 +132,17 @@ public class CustomerDTO {
 	public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
 		this.bookingHeaders = bookingHeaders;
 	}
+<<<<<<< HEAD
+
+	private String customerRole;
+
+    private String authProvider;
+
+    private Boolean profileCompleted;
+
+    private Set<BookingHeader> bookingHeaders;
+=======
     
     
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 }

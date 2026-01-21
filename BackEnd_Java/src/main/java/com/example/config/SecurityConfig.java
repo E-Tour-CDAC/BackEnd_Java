@@ -9,11 +9,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+<<<<<<< HEAD
+=======
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 
 @Configuration
 public class SecurityConfig {
@@ -21,6 +24,19 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthFilter jwtFilter;
 
+<<<<<<< HEAD
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+=======
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -35,11 +51,14 @@ public class SecurityConfig {
             .sessionManagement(sess ->
                     sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 
         return http.build();
     }
 
     @Bean
+<<<<<<< HEAD
+=======
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration config = new CorsConfiguration();
@@ -68,6 +87,7 @@ public class SecurityConfig {
     }
 
     @Bean
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
     public AuthenticationManager authenticationManager() {
         return authentication -> authentication;
     }
