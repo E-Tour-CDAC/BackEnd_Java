@@ -15,8 +15,6 @@ import java.util.Set;
 
 @Entity
 @Table(name = "customer_master")
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerMaster {
