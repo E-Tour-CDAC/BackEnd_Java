@@ -7,7 +7,7 @@ import com.example.entities.CustomerMaster;
 import com.example.enums.AuthProvider;
 
 import com.example.enums.CustomerRole;
-import com.example.mapper.CustomerMasterMapper;
+import com.example.mapper.CustomerMapper;
 import com.example.model.CustomerModel;
 import com.example.repositories.CustomerRepository;
 import com.example.util.JwtUtil;
@@ -33,7 +33,7 @@ public class AuthService {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private CustomerMasterMapper mapper;
+    private CustomerMapper mapper;
 
 
     //REGISTER (LOCAL)

@@ -6,7 +6,7 @@ import com.example.model.CustomerModel;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CustomerMasterMapper {
+public class CustomerMapper {
 
     // DTO → Model
     public CustomerModel toModel(CustomerMaster entity) {
