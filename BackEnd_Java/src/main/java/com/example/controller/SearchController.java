@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/search")
+@CrossOrigin(origins = "http://localhost:5137")
 public class SearchController {
 
     private final SearchService searchService;
