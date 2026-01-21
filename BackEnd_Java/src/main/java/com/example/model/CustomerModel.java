@@ -9,13 +9,42 @@ import lombok.Setter;
 
 import java.util.Set;
 
+<<<<<<< HEAD
 @Getter
 @Setter
+=======
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerModel {
 
+<<<<<<< HEAD
     public Integer getId() {
+=======
+    private Integer id;
+
+    private String email;
+
+    private String phone;
+
+    private String address;
+
+    private String firstName;
+
+    private String lastName;
+
+    private String password;
+
+    private String customerRole;
+
+    private String authProvider;
+
+    private Boolean profileCompleted;
+
+    private Set<BookingHeader> bookingHeaders;
+
+	public Integer getId() {
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 		return id;
 	}
 
@@ -102,6 +131,7 @@ public class CustomerModel {
 	public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
 		this.bookingHeaders = bookingHeaders;
 	}
+<<<<<<< HEAD
 
 	private Integer id;
 
@@ -124,4 +154,8 @@ public class CustomerModel {
     private Boolean profileCompleted;
 
     private Set<BookingHeader> bookingHeaders;
+=======
+    
+    
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 }

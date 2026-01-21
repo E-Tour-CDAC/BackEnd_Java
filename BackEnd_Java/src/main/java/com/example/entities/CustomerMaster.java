@@ -15,8 +15,12 @@ import java.util.Set;
 
 @Entity
 @Table(name = "customer_master")
+<<<<<<< HEAD
 @Getter
 @Setter
+=======
+
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerMaster {
@@ -50,7 +54,24 @@ public class CustomerMaster {
     @Column(name = "customer_role", nullable = false)
     private CustomerRole customerRole;
 
+<<<<<<< HEAD
     public Integer getId() {
+=======
+    @ColumnDefault("'LOCAL'")
+    @Lob
+    @Enumerated(EnumType.STRING)
+    @Column(name = "auth_provider", nullable = false)
+    private AuthProvider authProvider;
+
+    @ColumnDefault("0")
+    @Column(name = "profile_completed", nullable = false)
+    private Boolean profileCompleted;
+
+    @OneToMany(mappedBy = "customer")
+    private Set<BookingHeader> bookingHeaders = new LinkedHashSet<>();
+
+	public Integer getId() {
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 		return id;
 	}
 
@@ -137,6 +158,7 @@ public class CustomerMaster {
 	public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
 		this.bookingHeaders = bookingHeaders;
 	}
+<<<<<<< HEAD
 
 	@ColumnDefault("'LOCAL'")
     @Lob
@@ -150,4 +172,8 @@ public class CustomerMaster {
 
     @OneToMany(mappedBy = "customer")
     private Set<BookingHeader> bookingHeaders = new LinkedHashSet<>();
+=======
+    
+    
+>>>>>>> 72611e12090a56c25edf5241cb23cf14338af9c0
 }
