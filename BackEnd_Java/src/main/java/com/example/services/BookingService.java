@@ -1,9 +1,11 @@
 package com.example.services;
-import com.example.entities.BookingHeader;
 
-public interface BookingService{
+import com.example.dto.BookingCreateRequestDTO;
+import com.example.dto.BookingResponseDTO;
 
-    BookingHeader saveBooking(BookingHeader booking);
+public interface BookingService {
 
-    BookingHeader getBookingById(Integer bookingId);
+    BookingResponseDTO saveBooking(BookingCreateRequestDTO dto);
+
+    BookingResponseDTO getBookingById(Integer bookingId);
 }

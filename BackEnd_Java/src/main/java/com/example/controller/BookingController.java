@@ -1,8 +1,15 @@
 package com.example.controller;
 
-import com.example.entities.BookingHeader;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.dto.BookingCreateRequestDTO;
+import com.example.dto.BookingResponseDTO;
 import com.example.services.BookingService;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -14,18 +21,17 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    // 1️⃣ CREATE / SAVE BOOKING
+    // CREATE BOOKING
     @PostMapping
-    public BookingHeader createBooking(@RequestBody BookingHeader booking) {
+    public BookingResponseDTO createBooking(
+            @RequestBody BookingCreateRequestDTO dto) {
 
-        // Controller assumes:
-        // customer, tour, status, amount are already set
-        return bookingService.saveBooking(booking);
+        return bookingService.saveBooking(dto);
     }
 
-    // 2️⃣ GET BOOKING BY ID (SUMMARY)
+    // GET BOOKING SUMMARY
     @GetMapping("/{bookingId}")
-    public BookingHeader getBooking(@PathVariable Integer bookingId) {
+    public BookingResponseDTO getBooking(@PathVariable Integer bookingId) {
 
         return bookingService.getBookingById(bookingId);
     }
