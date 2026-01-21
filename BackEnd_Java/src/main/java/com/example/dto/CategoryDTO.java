@@ -1,6 +1,9 @@
 package com.example.dto;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
+
 
 public class CategoryDTO {
 
@@ -51,4 +54,6 @@ public class CategoryDTO {
     public void setChildren(List<CategoryDTO> children) {
         this.children = children;
     }
+
+
 }

@@ -1,9 +1,10 @@
-package com.example.services;
+package com.example.services.impl;
 
 import com.example.dto.BookingCreateRequestDTO;
 import com.example.dto.BookingResponseDTO;
 import com.example.entities.BookingHeader;
 import com.example.repositories.BookingRepository;
+import com.example.services.BookingService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
