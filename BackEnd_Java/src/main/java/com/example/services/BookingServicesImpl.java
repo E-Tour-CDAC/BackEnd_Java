@@ -1,16 +1,15 @@
 package com.example.services;
 
-
-
+import com.example.dto.BookingCreateRequestDTO;
+import com.example.dto.BookingResponseDTO;
 import com.example.entities.BookingHeader;
 import com.example.repositories.BookingRepository;
-import com.example.services.BookingService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 @Service
-public class BookingServicesImpl implements BookingService{
+public class BookingServicesImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
 
@@ -18,23 +17,43 @@ public class BookingServicesImpl implements BookingService{
         this.bookingRepository = bookingRepository;
     }
 
-    // SAVE BOOKING
+    // SAVE BOOKING (BOOKING-ONLY)
     @Override
-    public BookingHeader saveBooking(BookingHeader booking) {
+    public BookingResponseDTO saveBooking(BookingCreateRequestDTO dto) {
 
-        // booking date set if not already set
-        if (booking.getBookingDate() == null) {
-            booking.setBookingDate(LocalDate.now());
-        }
+        BookingHeader booking = new BookingHeader();
 
-        return bookingRepository.save(booking);
+        // booking-only fields
+        booking.setBookingDate(LocalDate.now());
+        booking.setNoOfPax(dto.getNoOfPax());
+        booking.setTourAmount(dto.getTourAmount());
+        booking.setTaxes(dto.getTaxes());
+        booking.setTotalAmount(dto.getTourAmount().add(dto.getTaxes()));
+
+        BookingHeader saved = bookingRepository.save(booking);
+
+        return mapToResponseDTO(saved);
     }
 
     // GET BOOKING SUMMARY
     @Override
-    public BookingHeader getBookingById(Integer bookingId) {
+    public BookingResponseDTO getBookingById(Integer bookingId) {
 
-        return bookingRepository.findById(bookingId)
+        BookingHeader booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        return mapToResponseDTO(booking);
+    }
+
+    // 🔁 Mapper (BOOKING-ONLY)
+    private BookingResponseDTO mapToResponseDTO(BookingHeader booking) {
+
+        BookingResponseDTO dto = new BookingResponseDTO();
+        dto.setBookingId(booking.getId());
+        dto.setBookingDate(booking.getBookingDate());
+        dto.setNoOfPax(booking.getNoOfPax());
+        dto.setTotalAmount(booking.getTotalAmount());
+
+        return dto;
     }
 }
