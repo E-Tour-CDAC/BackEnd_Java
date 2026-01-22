@@ -1,4 +1,4 @@
-package com.example.services;
+package com.example.services.impl;
 
 import com.example.dto.SearchResultDTO;
 import com.example.repositories.SearchRepository;

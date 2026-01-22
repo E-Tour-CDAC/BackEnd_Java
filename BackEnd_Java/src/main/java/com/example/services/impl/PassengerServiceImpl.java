@@ -1,10 +1,11 @@
-package com.example.services;
+package com.example.services.impl;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.services.PassengerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import com.example.repositories.BookingRepository;
 import com.example.repositories.PassengerRepository;
 
 @Service
-public class PassengerServiceImpl implements PassengerService{
+public class PassengerServiceImpl implements PassengerService {
 
 	@Autowired
     private PassengerRepository passengerRepository;

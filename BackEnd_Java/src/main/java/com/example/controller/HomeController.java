@@ -9,19 +9,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.dto.CategoryDTO;
 import com.example.dto.TourGuideDTO;
 import com.example.services.CategoryService;
+<<<<<<< HEAD
 import com.example.services.TourGuideServices;
 import com.example.services.TourService;
+=======
+
+>>>>>>> c468b0a0cce32968be2185e99f4a8e860809e298
 
 @RestController
 @RequestMapping("/home")
 public class HomeController {
 
 	private final CategoryService categoryService;
+<<<<<<< HEAD
 	private final TourService tourService;
+=======
+>>>>>>> c468b0a0cce32968be2185e99f4a8e860809e298
 
-	public HomeController(CategoryService categoryService, TourGuideServices tourGuideServices) {
+
+	public HomeController(CategoryService categoryService) {
 		this.categoryService = categoryService;
-		this.tourGuideServices = tourGuideServices;
 	}
 
 	@GetMapping
@@ -32,12 +39,6 @@ public class HomeController {
 	@GetMapping("/categories")
 	public List<CategoryDTO> getHomeCategories() {
 		return categoryService.getHomeCategories();
-	}
-
-
-	@GetMapping("/tour-guides")
-	public List<TourGuideDTO> getHomeTourGuides() {
-		return tourGuideServices.getAllTourGuides();
 	}
 }
 
