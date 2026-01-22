@@ -17,7 +17,6 @@ public class HomeController {
 
 	private final CategoryService categoryService;
 
-
 	public HomeController(CategoryService categoryService) {
 		this.categoryService = categoryService;
 	}
