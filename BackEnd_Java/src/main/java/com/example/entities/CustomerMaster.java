@@ -1,6 +1,13 @@
 package com.example.entities;
 
+import com.example.enums.AuthProvider;
+import com.example.enums.CustomerRole;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.LinkedHashSet;
@@ -8,6 +15,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "customer_master")
+@NoArgsConstructor
+@AllArgsConstructor
 public class CustomerMaster {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,20 +44,22 @@ public class CustomerMaster {
 
     @ColumnDefault("'CUSTOMER'")
     @Lob
+    @Enumerated(EnumType.STRING)
     @Column(name = "customer_role", nullable = false)
-    private String customerRole;
+    private CustomerRole customerRole;
 
     @ColumnDefault("'LOCAL'")
     @Lob
+    @Enumerated(EnumType.STRING)
     @Column(name = "auth_provider", nullable = false)
-    private String authProvider;
+    private AuthProvider authProvider;
 
     @ColumnDefault("0")
     @Column(name = "profile_completed", nullable = false)
     private Boolean profileCompleted;
 
     @OneToMany(mappedBy = "customer")
-    private Set<BookingHeader> bookingHeaders = new LinkedHashSet<>();
+    private Set<BookingHeader> bookingHeaders;
 
     public Integer getId() {
         return id;
@@ -106,19 +117,19 @@ public class CustomerMaster {
         this.password = password;
     }
 
-    public String getCustomerRole() {
+    public CustomerRole getCustomerRole() {
         return customerRole;
     }
 
-    public void setCustomerRole(String customerRole) {
+    public void setCustomerRole(CustomerRole customerRole) {
         this.customerRole = customerRole;
     }
 
-    public String getAuthProvider() {
+    public AuthProvider getAuthProvider() {
         return authProvider;
     }
 
-    public void setAuthProvider(String authProvider) {
+    public void setAuthProvider(AuthProvider authProvider) {
         this.authProvider = authProvider;
     }
 
@@ -137,5 +148,4 @@ public class CustomerMaster {
     public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
         this.bookingHeaders = bookingHeaders;
     }
-
 }
