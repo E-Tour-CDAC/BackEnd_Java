@@ -29,4 +29,16 @@ public class BookingStatusServiceImpl  implements BookingStatusService {
 
     public BookingStatusDTO getStatusById(Integer statusId) {
         BookingStatusMaster status = statusRepository.findById(statusId)
+                .orElseThrow(() -> new RuntimeException("Status not found"));
+        return mapToDTO(status);
+    }
 
+    private BookingStatusDTO mapToDTO(BookingStatusMaster status) {
+
+        BookingStatusDTO dto= new BookingStatusDTO();
+        dto.setStatusId(status.getId());
+        dto.setStatusName(status.getStatusName());
+        return dto;
+    }
+
+}
