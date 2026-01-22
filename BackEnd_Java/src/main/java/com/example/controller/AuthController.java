@@ -20,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
-public class    AuthController {
+public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -48,10 +48,38 @@ public class    AuthController {
         return ResponseEntity.ok(response);
     }
 
+    // GOOGLE
+//    @PostMapping("/google")
+//    public ResponseEntity<Map<String, String>> googleLogin(
+//            @RequestBody GoogleLoginRequestDTO request) {
+//
+//        String token = authService.googleLogin(request.getIdToken());
+//
+//        Map<String, String> response = new HashMap<>();
+//        response.put("token", token);
+//
+//        return ResponseEntity.ok(response);
+//    }
+//
+//    @org.springframework.web.bind.annotation.GetMapping("/success")
+//    public ResponseEntity<String> loginSuccess(
+//            @org.springframework.web.bind.annotation.RequestParam("token") String token) {
+//        return ResponseEntity.ok("Login Successful! Your JWT Token is: " + token);
+//    }
 
-    //DON'T TOUCH THIS IMP
-    //google login and register ROUTE
-    //http://localhost:8080/oauth2/authorization/google
-    ///oauth2/authorization/google     -- inbuild by spring security
+   // @PostMapping("/google")
+    // public ResponseEntity<Map<String, String>> googleLogin(
+    //         @RequestBody Map<String, String> request
+    // ) {
+    //     String token = authService.googleLogin(request.get("idToken"));
+    //
+    //     return ResponseEntity.ok(
+    //             Map.of(
+    //                     "token", token,
+    //                     "type", "Bearer"
+    //             )
+    //     );
+    // }
+
 
 }

@@ -39,7 +39,7 @@ public class CustomerMaster {
     @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
 
-    @Column(name = "password",nullable = true)
+    @Column(name = "password", nullable = false)
     private String password;
 
     @ColumnDefault("'CUSTOMER'")
