@@ -131,7 +131,7 @@ public class PaymentServiceImpl implements PaymentService {
         dto.setPaymentDate(payment.getPaymentDate());
 
         if (payment.getBooking() != null) {
-            dto.setBookingId(payment.getBooking().getId()); // ✅ FIX HERE
+            dto.setBookingId(payment.getBooking().getId()); 
         }
 
         return dto;
