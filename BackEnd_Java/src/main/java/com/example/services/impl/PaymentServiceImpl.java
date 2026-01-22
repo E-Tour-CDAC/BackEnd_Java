@@ -33,29 +33,28 @@ public class PaymentServiceImpl implements PaymentService {
                                      String paymentStatus,
                                      String paymentAmount) {
 
-        // 1️⃣ Fetch booking
+       
         BookingHeader booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // 2️⃣ Prevent duplicate SUCCESS payment
+        
         if (paymentRepository.existsByBooking_IdAndPaymentStatus(bookingId, "SUCCESS")) {
             throw new RuntimeException("Payment already completed for this booking");
         }
 
-        // 3️⃣ Validate unique transaction reference
+        
         paymentRepository.findByTransactionRef(transactionRef)
                 .ifPresent(p -> {
                     throw new RuntimeException("Duplicate transaction reference");
                 });
 
-        // 4️⃣ Validate payment amount
         BigDecimal payAmount = new BigDecimal(paymentAmount);
         if (booking.getTotalAmount() == null ||
                 payAmount.compareTo(booking.getTotalAmount()) != 0) {
             throw new RuntimeException("Payment amount mismatch");
         }
 
-        // 5️⃣ Create payment entity
+        
         PaymentMaster payment = new PaymentMaster();
         payment.setBooking(booking);
         payment.setPaymentMode(paymentMode);
@@ -64,7 +63,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaymentAmount(payAmount);
         payment.setPaymentDate(Instant.now());
 
-        // 6️⃣ Save payment
+        
         return paymentRepository.save(payment);
     }
 
@@ -83,7 +82,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new RuntimeException("No successful payment found"));
     }
 
-    // ✅ DTO MAPPER
+    
     public PaymentDTO mapToDTO(PaymentMaster payment) {
 
         PaymentDTO dto = new PaymentDTO();
@@ -95,7 +94,7 @@ public class PaymentServiceImpl implements PaymentService {
         dto.setPaymentDate(payment.getPaymentDate());
 
         if (payment.getBooking() != null) {
-            dto.setBookingId(payment.getBooking().getId());
+            dto.setBookingId(payment.getBooking().getId()); 
         }
 
         return dto;
