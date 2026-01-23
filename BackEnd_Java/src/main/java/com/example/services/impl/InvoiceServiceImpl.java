@@ -55,7 +55,7 @@ public class InvoiceServiceImpl implements InvoicePdfService {
             Font normalFont = new Font(Font.HELVETICA, 11);
 
             // ===== Header =====
-            Paragraph header = new Paragraph("TOURVISTA INVOICE", titleFont);
+            Paragraph header = new Paragraph("VirtuGo Invoice", titleFont);
             header.setAlignment(Element.ALIGN_CENTER);
             header.setSpacingAfter(20);
             document.add(header);
