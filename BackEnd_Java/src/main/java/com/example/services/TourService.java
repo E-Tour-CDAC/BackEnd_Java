@@ -10,7 +10,7 @@ public interface TourService {
     TourDTO getTourById(Integer id);
 
     // ✅ NEW
-//    List<TourDTO> getToursByCategoryId(Integer categoryId);
+    List<TourDTO> getToursByCategoryId(Integer categoryId);
     
  // In TourService.java
     List<TourDTO> getToursByIds(List<Integer> tourIds);
