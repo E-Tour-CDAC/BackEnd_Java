@@ -3,41 +3,20 @@ package com.example.dto;
 import java.util.List;
 
 public class TourDTO {
-
     private Integer id;
-
-    // Category
-    private Integer categoryId;
-    private String CategoryCode;
-    public String getCategoryCode() {
-		return CategoryCode;
-	}
-	public void setCategoryCode(String categoryCode) {
-		CategoryCode = categoryCode;
-	}
-	private String categoryName;
-    private String subCategoryCode;
-
-    // Departure
+    private String categoryName;
     private Integer departureId;
-
     private List<ItineraryDTO> itineraries;
     private List<CostDTO> costs;
     private List<DepartureDTO> departures;
     private List<TourGuideDTO> guides;
 
-    // Getters & Setters
+    // getters and setters
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
-    public Integer getCategoryId() { return categoryId; }
-    public void setCategoryId(Integer categoryId) { this.categoryId = categoryId; }
-
     public String getCategoryName() { return categoryName; }
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
-
-    public String getSubCategoryCode() { return subCategoryCode; }
-    public void setSubCategoryCode(String subCategoryCode) { this.subCategoryCode = subCategoryCode; }
 
     public Integer getDepartureId() { return departureId; }
     public void setDepartureId(Integer departureId) { this.departureId = departureId; }
