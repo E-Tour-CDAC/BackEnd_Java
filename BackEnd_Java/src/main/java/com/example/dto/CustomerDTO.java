@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Set;
+
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,17 +23,30 @@ public class CustomerDTO {
     @Email(message = "Invalid email format")
     private String email;
 
+    @Pattern(
+            regexp = "^[6-9]\\d{9}$",
+            message = "Invalid phone number"
+    )
     private String phone;
 
     private String address;
 
     @NotBlank(message = "First name is required")
+    @Size(min = 3, max = 50, message = "First name must be at least 3 characters")
+    @Pattern(regexp = "^[A-Za-z]+$", message = "First name must contain only letters")
     private String firstName;
 
     @NotBlank(message = "Last name is required")
+    @Size(min = 1, max = 50, message = "Last name must be at least 3 characters")
+    @Pattern(regexp = "^[A-Za-z]+$", message = "Last name must contain only letters")
     private String lastName;
 
-    @NotBlank(message = "Password is required")
+    //@NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    @Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=]).*$",
+            message = "Password must contain uppercase, lowercase, number and special character"
+    )
     private String password;
 
     private String customerRole;
@@ -39,7 +55,7 @@ public class CustomerDTO {
 
     private Boolean profileCompleted;
 
-    private Set<BookingHeader> bookingHeaders;
+    //private Set<BookingHeader> bookingHeaders;
 
     public Integer getId() {
         return id;
@@ -121,11 +137,11 @@ public class CustomerDTO {
         this.profileCompleted = profileCompleted;
     }
 
-    public Set<BookingHeader> getBookingHeaders() {
-        return bookingHeaders;
-    }
-
-    public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
-        this.bookingHeaders = bookingHeaders;
-    }
+//    public Set<BookingHeader> getBookingHeaders() {
+//        return bookingHeaders;
+//    }
+//
+//    public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
+//        this.bookingHeaders = bookingHeaders;
+//    }
 }

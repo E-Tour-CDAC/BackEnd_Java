@@ -66,5 +66,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         // imp
         SecurityContextHolder.clearContext();
+
+
+        //REDIRECT TO FRONTEND WITH TOKEN
+//        response.sendRedirect(
+//                frontendUrl + "/oauth2-success?token=" + jwt
+//        );
     }
 }
