@@ -81,13 +81,13 @@ public class TourServiceImpl implements TourService {
     }
 
     // ✅ NEW METHOD
-//    @Override
-//    public List<TourDTO> getToursByCategoryId(Integer categoryId) {
-//        return tourRepository.findByCategoryId(categoryId)
-//                .stream()
-//                .map(this::convertToDTO)
-//                .collect(Collectors.toList());
-//    }
+    @Override
+    public List<TourDTO> getToursByCategoryId(Integer categoryId) {
+        return tourRepository.findByCategory_Id(categoryId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
     @Override
     public TourDTO getTourById(Integer id) {
         return tourRepository.findById(id)
@@ -105,7 +105,8 @@ public class TourServiceImpl implements TourService {
         dto.setCategoryName(tour.getCategory().getCategoryName());
         dto.setSubCategoryCode(tour.getCategory().getSubcatCode());
         dto.setCategoryCode(tour.getCategory().getCatCode());
-
+        dto.setJumpFlag(tour.getCategory().getJumpFlag());
+        
         dto.setDepartureId(tour.getDeparture().getId());
         Integer categoryId = tour.getCategory().getId();
 

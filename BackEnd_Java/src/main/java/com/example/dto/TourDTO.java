@@ -6,6 +6,17 @@ public class TourDTO {
 
     private Integer id;
 
+ // ✅ ADD THIS
+    private Boolean jumpFlag;
+
+    // getters & setters
+    public Boolean getJumpFlag() {
+        return jumpFlag;
+    }
+
+    public void setJumpFlag(Boolean jumpFlag) {
+        this.jumpFlag = jumpFlag;
+    }
     // Category
     private Integer categoryId;
     private String CategoryCode;

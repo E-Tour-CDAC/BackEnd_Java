@@ -26,4 +26,10 @@ public class TourController {
             @PathVariable String subcat) {
         return tourService.getToursBySubCategory(subcat);
     }
+    
+    @GetMapping("/details/{catId}")
+    public List<TourDTO> getToursForDetailsPage(
+            @PathVariable Integer catId) {
+        return tourService.getToursByCategoryId(catId);
+    }
 }
