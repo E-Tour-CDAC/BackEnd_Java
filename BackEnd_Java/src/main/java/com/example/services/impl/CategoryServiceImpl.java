@@ -30,19 +30,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .toList();
     }
 
-    @Override
-    public List<Integer> getHomeCategoryIds() {
-        return categoryRepository.findBySubcatCode("^")
-                .stream()
-                .map(CategoryMaster::getId) // 🔥 ONLY CHANGE
-                .toList();
-    }
-
-    @Override
-    public List<Integer> getCategoryIdsBySubcatCode(String subcatCode) {
-        return categoryRepository.findCategoryIdsBySubcatCode(subcatCode);
-    }
-
     // CATEGORY CLICK
     @Override
     public List<CategoryDTO> onCategoryClick(String catCode) {
@@ -60,7 +47,6 @@ public class CategoryServiceImpl implements CategoryService {
     // ENTITY → DTO
     private CategoryDTO mapToDTO(CategoryMaster c) {
         CategoryDTO dto = new CategoryDTO();
-        dto.setCategoryId(c.getId());
         dto.setCatCode(c.getCatCode());
         dto.setCategoryName(c.getCategoryName());
         dto.setImagePath(c.getImagePath());
