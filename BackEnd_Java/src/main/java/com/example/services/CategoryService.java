@@ -11,4 +11,10 @@ public interface CategoryService {
     List<CategoryDTO> getHomeCategories();
 
     List<CategoryDTO> onCategoryClick(String catCode);
+    
+    List<Integer> getCategoryIdsBySubcatCode(String subcatCode);
+    
+    List<Integer> getHomeCategoryIds();
+
+
 }

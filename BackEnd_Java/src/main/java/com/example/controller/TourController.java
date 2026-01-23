@@ -14,15 +14,16 @@ public class TourController {
     @Autowired
     private TourService tourService;
 
-    // Get all tours
+    // 🔹 HOME PAGE
     @GetMapping
-    public List<TourDTO> getAllTours() {
-        return tourService.getAllTours();
+    public List<TourDTO> getHomePageTours() {
+        return tourService.getHomePageTours();
     }
 
-    // Get tour by id
-    @GetMapping("/{id}")
-    public TourDTO getTourById(@PathVariable Integer id) {
-        return tourService.getTourById(id);
+    // 🔹 SUBCATEGORY PAGE
+    @GetMapping("/{subcat}")
+    public List<TourDTO> getToursBySubCategory(
+            @PathVariable String subcat) {
+        return tourService.getToursBySubCategory(subcat);
     }
 }
