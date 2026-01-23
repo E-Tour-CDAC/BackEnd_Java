@@ -40,12 +40,12 @@ public class CustomerMapper {
         dto.setAddress(model.getAddress());
 
         // ⚠️ Decide carefully if password should be exposed
-        dto.setPassword(model.getPassword());
+       // dto.setPassword(model.getPassword());
 
         dto.setCustomerRole(model.getCustomerRole());
         dto.setAuthProvider(model.getAuthProvider());
         dto.setProfileCompleted(model.getProfileCompleted());
-        dto.setBookingHeaders(model.getBookingHeaders());
+       // dto.setBookingHeaders(model.getBookingHeaders());
 
         return dto;
     }
