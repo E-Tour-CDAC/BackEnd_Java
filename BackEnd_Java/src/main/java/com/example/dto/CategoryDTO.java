@@ -7,11 +7,19 @@ import java.util.List;
 
 public class CategoryDTO {
 
+	private Integer categoryId;
     private String catCode;
     private String categoryName;
     private String imagePath;
     private Boolean jumpFlag;
 
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
     // only present if jumpFlag = false
     private List<CategoryDTO> children;
 
