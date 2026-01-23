@@ -14,7 +14,6 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(
  
                         "http://localhost:3000",
-
                         "http://localhost:4200",
                         "https://your-frontend.com"
 
