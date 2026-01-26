@@ -19,6 +19,15 @@ public class TourController {
     public List<TourDTO> getHomePageTours() {
         return tourService.getHomePageTours();
     }
+    
+    @GetMapping("/tour-id")
+    public Integer getTourId(
+            @RequestParam Integer categoryId,
+            @RequestParam Integer departureId
+    ) {
+        return tourService.getTourIdByCategoryAndDeparture(categoryId, departureId);
+    }
+
 
     // 🔹 SUBCATEGORY PAGE
     @GetMapping("/{subcat}")

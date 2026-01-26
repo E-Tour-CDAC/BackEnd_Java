@@ -95,6 +95,22 @@ public class TourServiceImpl implements TourService {
                 .orElseThrow(() -> new RuntimeException("Tour not found with id: " + id));
     }
 
+    @Override
+    public Integer getTourIdByCategoryAndDeparture(
+            Integer categoryId,
+            Integer departureId
+    ) {
+        return tourRepository
+                .findByCategory_IdAndDeparture_Id(categoryId, departureId)
+                .map(TourMaster::getId)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                            "Tour not found for categoryId="
+                            + categoryId + " and departureId=" + departureId
+                        )
+                );
+    }
+
     private TourDTO convertToDTO(TourMaster tour) {
 
         TourDTO dto = new TourDTO();

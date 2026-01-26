@@ -1,7 +1,10 @@
 package com.example.services;
 
 import com.example.dto.TourDTO;
+import com.example.entities.TourMaster;
+
 import java.util.List;
+import java.util.Optional;
 
 public interface TourService {
 
@@ -9,16 +12,23 @@ public interface TourService {
 
     TourDTO getTourById(Integer id);
 
-    // ✅ NEW
     List<TourDTO> getToursByCategoryId(Integer categoryId);
-    
- // In TourService.java
+
     List<TourDTO> getToursByIds(List<Integer> tourIds);
-   
 
-        List<TourDTO> getHomePageTours();
+    List<TourDTO> getHomePageTours();
 
-        List<TourDTO> getToursBySubCategory(String subCategoryCode);
+    List<TourDTO> getToursBySubCategory(String subCategoryCode);
+
+    // ✅ REQUIRED FOR BOOKING
     
 
+    Integer getTourIdByCategoryAndDeparture(
+            Integer categoryId,
+            Integer departureId
+    );
+
+
+    
+    
 }

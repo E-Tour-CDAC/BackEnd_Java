@@ -2,41 +2,67 @@ package com.example.services.impl;
 
 import com.example.dto.BookingCreateRequestDTO;
 import com.example.dto.BookingResponseDTO;
-import com.example.entities.BookingHeader;
+import com.example.entities.*;
 import com.example.repositories.BookingRepository;
 import com.example.services.BookingService;
+import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Service
 public class BookingServicesImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
+    private final EntityManager entityManager;
 
-    public BookingServicesImpl(BookingRepository bookingRepository) {
+    public BookingServicesImpl(
+            BookingRepository bookingRepository,
+            EntityManager entityManager
+    ) {
         this.bookingRepository = bookingRepository;
+        this.entityManager = entityManager;
     }
 
-    // SAVE BOOKING (BOOKING-ONLY)
     @Override
     public BookingResponseDTO saveBooking(BookingCreateRequestDTO dto) {
 
+        // ✅ ID-only references (NO FETCH)
+        CustomerMaster customerRef =
+                entityManager.getReference(CustomerMaster.class, dto.getCustomerId());
+
+        TourMaster tourRef =
+                entityManager.getReference(TourMaster.class, dto.getTourId());
+
+        BookingStatusMaster statusRef =
+                entityManager.getReference(BookingStatusMaster.class, dto.getStatusId());
+
+        // ✅ Safe BigDecimal handling
+        BigDecimal tourAmount =
+                dto.getTourAmount() != null ? dto.getTourAmount() : BigDecimal.ZERO;
+
+        BigDecimal taxes =
+                dto.getTaxes() != null ? dto.getTaxes() : BigDecimal.ZERO;
+
+        // ✅ Create BookingHeader
         BookingHeader booking = new BookingHeader();
-
-        // booking-only fields
         booking.setBookingDate(LocalDate.now());
+        booking.setCustomer(customerRef);
+        booking.setTour(tourRef);
+        booking.setStatus(statusRef);
         booking.setNoOfPax(dto.getNoOfPax());
-        booking.setTourAmount(dto.getTourAmount());
-        booking.setTaxes(dto.getTaxes());
-        booking.setTotalAmount(dto.getTourAmount().add(dto.getTaxes()));
+        booking.setTourAmount(tourAmount);
+        booking.setTaxes(taxes);
+        
 
+        // ✅ Save
         BookingHeader saved = bookingRepository.save(booking);
 
+        // ✅ Map to response DTO
         return mapToResponseDTO(saved);
     }
 
-    // GET BOOKING SUMMARY
     @Override
     public BookingResponseDTO getBookingById(Integer bookingId) {
 
@@ -46,7 +72,7 @@ public class BookingServicesImpl implements BookingService {
         return mapToResponseDTO(booking);
     }
 
-    // 🔁 Mapper (BOOKING-ONLY)
+    // 🔁 COMMON MAPPER
     private BookingResponseDTO mapToResponseDTO(BookingHeader booking) {
 
         BookingResponseDTO dto = new BookingResponseDTO();
@@ -54,6 +80,11 @@ public class BookingServicesImpl implements BookingService {
         dto.setBookingDate(booking.getBookingDate());
         dto.setNoOfPax(booking.getNoOfPax());
         dto.setTotalAmount(booking.getTotalAmount());
+
+        // ✅ STATUS STRING
+        if (booking.getStatus() != null) {
+            dto.setStatus(booking.getStatus().getStatusName());
+        }
 
         return dto;
     }
