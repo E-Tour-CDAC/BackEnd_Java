@@ -83,8 +83,18 @@ public class AuthService {
         return jwtUtil.generateToken(user.getEmail(), user.getCustomerRole().name());
     }
 
+    public CustomerModel getCustomerProfile(String email) {
+        CustomerMaster customer = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
 
-     //GOOGLE LOGIN
+        CustomerModel model = mapper.toModel(customer);
+        model.setPassword(null); // 🔒 never expose password
+
+        return model;
+    }
+
+
+    //GOOGLE LOGIN
 //    public String googleLogin(GoogleUserPayload payload) {
 //
 //        CustomerMaster user = repository.findByEmail(payload.getEmail())
@@ -103,5 +113,30 @@ public class AuthService {
 //        return jwtUtil.generateToken(user.getEmail(), user.getCustomerRole().name());
 //    }
 
+    //update profile
+    public CustomerModel updateCustomerProfile(String email, CustomerDTO dto) {
+
+        CustomerMaster customer = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        // updatable fields
+        customer.setFirstName(dto.getFirstName());
+        customer.setLastName(dto.getLastName());
+        customer.setPhone(dto.getPhone());
+        customer.setAddress(dto.getAddress());
+        customer.setProfileCompleted(true);
+
+        // password optional
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            customer.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        CustomerMaster saved = repository.save(customer);
+
+        CustomerModel model = mapper.toModel(saved);
+        model.setPassword(null); // never return password
+
+        return model;
+    }
 
 }
