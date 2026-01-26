@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Table(name = "itinerary_master")
 public class ItineraryMaster {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "itinerary_id", nullable = false)
@@ -19,10 +20,16 @@ public class ItineraryMaster {
 
     @Column(name = "day_no", nullable = false)
     private Integer dayNo;
-
+    
     @Lob
     @Column(name = "itinerary_detail", nullable = false)
     private String itineraryDetail;
+
+    // ✅ NEW COLUMN
+    @Column(name = "day_wise_image")
+    private String dayWiseImage;
+
+    // ===== getters & setters =====
 
     public Integer getId() {
         return id;
@@ -56,4 +63,11 @@ public class ItineraryMaster {
         this.itineraryDetail = itineraryDetail;
     }
 
+    public String getDayWiseImage() {
+        return dayWiseImage;
+    }
+
+    public void setDayWiseImage(String dayWiseImage) {
+        this.dayWiseImage = dayWiseImage;
+    }
 }
