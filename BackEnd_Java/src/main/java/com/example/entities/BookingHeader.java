@@ -36,9 +36,14 @@ public class BookingHeader {
     @Column(name = "taxes", nullable = false, precision = 10, scale = 2)
     private BigDecimal taxes;
 
-    @ColumnDefault("(`tour_amount` + `taxes`)")
-    @Column(name = "total_amount", precision = 10, scale = 2)
-    private BigDecimal totalAmount;
+    @Column(
+    	    name = "total_amount",
+    	    precision = 10,
+    	    scale = 2,
+    	    insertable = false,
+    	    updatable = false
+    	)
+    	private BigDecimal totalAmount;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ColumnDefault("1")
