@@ -117,6 +117,7 @@ public class TourServiceImpl implements TourService {
                     iDto.setId(it.getId());
                     iDto.setDayNo(it.getDayNo());
                     iDto.setItineraryDetail(it.getItineraryDetail());
+                    iDto.setDayWiseImage(it.getDayWiseImage());
                     return iDto;
                 }).collect(Collectors.toList());
         dto.setItineraries(itineraries);
