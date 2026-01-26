@@ -8,6 +8,7 @@ import com.example.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -24,6 +25,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Value("${app.frontend.url:http://localhost:5173}")
+    private String frontendUrl;
 
     @Override
     public void onAuthenticationSuccess(
@@ -56,21 +60,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                 user.getCustomerRole().name()
         );
 
-        //RESPONSE
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/plain");
-        response.setCharacterEncoding("UTF-8");
-
-        response.getWriter().print(jwt);
-        response.getWriter().flush();
-
-        // imp
-        SecurityContextHolder.clearContext();
-
-
-        //REDIRECT TO FRONTEND WITH TOKEN
-//        response.sendRedirect(
-//                frontendUrl + "/oauth2-success?token=" + jwt
-//        );
+        // ONLY redirect - don't write to response
+        response.sendRedirect(frontendUrl + "/oauth2-success?token=" + jwt);
     }
 }
