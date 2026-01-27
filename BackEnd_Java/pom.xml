@@ -25,6 +25,11 @@
 	</properties>
 
 	<dependencies>
+		<!-- Spring Actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
 		<!-- Spring Web (REST APIs) -->
 		<dependency>
@@ -107,12 +112,12 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--        &lt;!&ndash; H2 Database (for testing) &ndash;&gt;-->
-		<!--        <dependency>-->
-		<!--            <groupId>com.h2database</groupId>-->
-		<!--            <artifactId>h2</artifactId>-->
-		<!--            <scope>test</scope>-->
-		<!--        </dependency>-->
+		<!-- &lt;!&ndash; H2 Database (for testing) &ndash;&gt; -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.h2database</groupId> -->
+		<!-- <artifactId>h2</artifactId> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
