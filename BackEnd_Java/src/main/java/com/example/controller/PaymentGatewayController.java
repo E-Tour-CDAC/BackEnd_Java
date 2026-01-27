@@ -30,8 +30,7 @@ public class PaymentGatewayController {
     public ResponseEntity<CreateOrderResponseDTO> createOrder(
             @RequestBody CreateOrderRequestDTO requestDTO) {
 
-        return ResponseEntity.ok(
-                paymentGatewayService.createOrder(requestDTO)
+        return ResponseEntity.ok(paymentGatewayService.createOrder(requestDTO)
         );
     }
 
