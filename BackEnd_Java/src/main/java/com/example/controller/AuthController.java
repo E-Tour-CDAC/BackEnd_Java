@@ -1,7 +1,9 @@
 package com.example.controller;
 
 import com.example.dto.CustomerDTO;
+import com.example.dto.ForgotPasswordDTO;
 import com.example.dto.LoginDTO;
+import com.example.dto.ResetPasswordDTO;
 import com.example.model.CustomerModel;
 import com.example.services.AuthService;
 import jakarta.validation.Valid;
@@ -47,6 +49,33 @@ public class    AuthController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> sendResetToken(
+            @RequestBody ForgotPasswordDTO dto) {
+
+        logger.info("Password reset requested for email: {}", dto.getEmail());
+
+        authService.sendResetToken(dto.getEmail());
+
+        return ResponseEntity.ok(
+                "Password reset link has been sent to your email"
+        );
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(
+            @RequestBody ResetPasswordDTO dto) {
+
+        logger.info("Attempting to reset password");
+
+        authService.resetPassword(dto);
+
+        return ResponseEntity.ok(
+                "Password has been reset successfully"
+        );
+    }
+
 
 
     //DON'T TOUCH THIS IMP

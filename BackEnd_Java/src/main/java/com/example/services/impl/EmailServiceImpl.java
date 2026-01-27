@@ -107,4 +107,5 @@ public class EmailServiceImpl implements EmailService {
 			throw new RuntimeException("Error sending email with invoice", e);
 		}
 	}
+
 }
