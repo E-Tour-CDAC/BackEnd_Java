@@ -3,6 +3,7 @@ package com.example.services;
 import com.example.dto.CustomerDTO;
 import com.example.dto.CustomerIdDTO;
 import com.example.dto.LoginDTO;
+import com.example.dto.ResetPasswordDTO;
 import com.example.entities.CustomerMaster;
 
 import com.example.enums.AuthProvider;
@@ -35,6 +36,11 @@ public class AuthService {
 
     @Autowired
     private CustomerMapper mapper;
+
+    @Autowired
+    private EmailService emailService;
+
+
 
     
 
@@ -84,6 +90,52 @@ public class AuthService {
 
         return jwtUtil.generateToken(user.getEmail(), user.getCustomerRole().name());
     }
+
+
+
+    public void sendResetToken(String email) {
+
+        CustomerMaster customerMaster = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String token = jwtUtil.generateResetToken(email);
+
+        String resetLink =
+                "http://localhost:5173/reset-password?token=" + token;
+
+        emailService.sendSimpleEmail(
+                email,
+                "Reset Your Password",
+                "Click the link below to reset your password:\n\n" +
+                        resetLink +
+                        "\n\nThis link is valid for 15 minutes."
+        );
+    }
+
+    public void resetPassword(ResetPasswordDTO dto) {
+
+        if (!jwtUtil.isResetTokenValid(dto.getToken())) {
+            throw new RuntimeException("Invalid or expired token");
+        }
+
+        String email = jwtUtil.extractUsername(dto.getToken());
+
+        CustomerMaster user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        repository.save(user);
+
+        emailService.sendSimpleEmail(
+                user.getEmail(),
+                "Password Updated",
+                "Your password has been successfully updated."
+        );
+    }
+
+
+
+
 
     public CustomerModel getCustomerProfile(String email) {
         CustomerMaster customer = repository.findByEmail(email)

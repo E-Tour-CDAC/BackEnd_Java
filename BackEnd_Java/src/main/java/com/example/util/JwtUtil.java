@@ -45,6 +45,29 @@ public class JwtUtil {
                 .getBody();
     }
 
+
+    public String generateResetToken(String email) {
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("type", "RESET_PASSWORD")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 15 * 60 * 1000))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public boolean isResetTokenValid(String token) {
+        Claims claims = getClaims(token);
+
+        String type = claims.get("type", String.class);
+
+        if (!"RESET_PASSWORD".equals(type)) {
+            throw new RuntimeException("Invalid reset token");
+        }
+
+        return true;
+    }
+
     public String extractRole(String token) {
         return getClaims(token).get("role", String.class);
     }
