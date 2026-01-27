@@ -1,6 +1,7 @@
 package com.example.services;
 
 import com.example.dto.CustomerDTO;
+import com.example.dto.CustomerIdDTO;
 import com.example.dto.LoginDTO;
 import com.example.entities.CustomerMaster;
 
@@ -35,6 +36,7 @@ public class AuthService {
     @Autowired
     private CustomerMapper mapper;
 
+    
 
     //REGISTER (LOCAL)
     public CustomerModel register(CustomerDTO dto) {
@@ -137,6 +139,14 @@ public class AuthService {
         model.setPassword(null); // never return password
 
         return model;
+    }
+    
+    public CustomerIdDTO getCustomerIdByEmail(String email) {
+
+        CustomerMaster customer = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        return new CustomerIdDTO(customer.getId());
     }
 
 }

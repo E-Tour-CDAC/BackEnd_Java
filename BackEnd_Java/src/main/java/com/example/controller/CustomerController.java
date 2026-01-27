@@ -2,6 +2,7 @@ package com.example.controller;
 
 
 import com.example.dto.CustomerDTO;
+import com.example.dto.CustomerIdDTO;
 import com.example.model.CustomerModel;
 import com.example.services.AuthService;
 
@@ -34,6 +35,15 @@ public class CustomerController {
         String email = principal.getName();
         CustomerModel updated = authService.updateCustomerProfile(email, dto);
         return ResponseEntity.ok(updated);
+    }
+    
+    @GetMapping("/id")
+    public ResponseEntity<CustomerIdDTO> getProfileID(Principal authentication) {
+
+        String email = authentication.getName(); // comes from JWT subject
+        CustomerIdDTO customerId = authService.getCustomerIdByEmail(email);
+
+        return ResponseEntity.ok(customerId);
     }
 
 }
