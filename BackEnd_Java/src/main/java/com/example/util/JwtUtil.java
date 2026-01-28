@@ -19,7 +19,7 @@ public class JwtUtil {
                 .setSubject(email)              // USER IDENTIFIER
                 .claim("role", role)            // ROLE AS CLAIM
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 24*60 * 60 * 1000)) // 24 hour
+                .setExpiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // 24 hour
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }

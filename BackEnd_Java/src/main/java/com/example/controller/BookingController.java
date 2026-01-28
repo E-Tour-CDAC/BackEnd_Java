@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import java.util.*;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,11 @@ public class BookingController {
 
         return bookingService.saveBooking(dto);
     }
+    // NEW: Get bookings by customer ID
+    @GetMapping("/customer/{customerId}")
+    public List<BookingResponseDTO> getBookingsByCustomerId1(@PathVariable Integer customerId) {
+        return bookingService.getBookingsByCustomerId(customerId);
+    }
 
     // GET BOOKING SUMMARY
     @GetMapping("/{bookingId}")
@@ -36,5 +42,12 @@ public class BookingController {
         return bookingService.getBookingById(bookingId);
     }
     
-    
+ // PAYMENT STATUS CHECK
+    @GetMapping("/status/{bookingId}")
+    public Integer getPaymentStatus(@PathVariable Integer bookingId) {
+        return bookingService.getPaymentStatus(bookingId);
+    }
+
+ 
+
 }

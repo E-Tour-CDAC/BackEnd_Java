@@ -1,5 +1,7 @@
 package com.example.services.impl;
 
+
+
 import com.example.dto.BookingCreateRequestDTO;
 import com.example.dto.BookingResponseDTO;
 import com.example.entities.*;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServicesImpl implements BookingService {
@@ -23,6 +27,14 @@ public class BookingServicesImpl implements BookingService {
     ) {
         this.bookingRepository = bookingRepository;
         this.entityManager = entityManager;
+    }
+    // NEW METHOD
+    @Override
+    public List<BookingResponseDTO> getBookingsByCustomerId(Integer customerId) {
+        return bookingRepository.findByCustomerId(customerId)
+                .stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -88,4 +100,16 @@ public class BookingServicesImpl implements BookingService {
 
         return dto;
     }
+    @Override
+    public Integer getPaymentStatus(Integer bookingId) {
+
+        Integer statusId = bookingRepository.findStatusIdByBookingId(bookingId);
+
+        if (statusId == null) {
+            throw new RuntimeException("Booking not found");
+        }
+
+        return statusId;
+    }
+
 }
