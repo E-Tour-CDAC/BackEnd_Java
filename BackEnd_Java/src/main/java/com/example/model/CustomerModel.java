@@ -34,7 +34,7 @@ public class CustomerModel {
 
     private Boolean profileCompleted;
 
-    private Set<BookingHeader> bookingHeaders;
+//    private Set<BookingHeader> bookingHeaders;
 
     public Integer getId() {
         return id;
@@ -116,11 +116,11 @@ public class CustomerModel {
         this.profileCompleted = profileCompleted;
     }
 
-    public Set<BookingHeader> getBookingHeaders() {
-        return bookingHeaders;
-    }
-
-    public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
-        this.bookingHeaders = bookingHeaders;
-    }
+//    public Set<BookingHeader> getBookingHeaders() {
+//        return bookingHeaders;
+//    }
+//
+//    public void setBookingHeaders(Set<BookingHeader> bookingHeaders) {
+//        this.bookingHeaders = bookingHeaders;
+//    }
 }

@@ -3,6 +3,8 @@ package com.example.entities;
 import com.example.enums.AuthProvider;
 import com.example.enums.CustomerRole;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -58,7 +60,9 @@ public class CustomerMaster {
     @Column(name = "profile_completed", nullable = false)
     private Boolean profileCompleted;
 
+    
     @OneToMany(mappedBy = "customer")
+    @JsonManagedReference
     private Set<BookingHeader> bookingHeaders;
 
     public Integer getId() {
