@@ -13,4 +13,7 @@ public interface SearchService {
     List<SearchResultDTO> searchByCost(BigDecimal minCost, BigDecimal maxCost);
 
     List<SearchResultDTO> searchByDate(LocalDate fromDate, LocalDate toDate);
+    
+    List<SearchResultDTO> searchByLocation(String keyword);
+
 }
