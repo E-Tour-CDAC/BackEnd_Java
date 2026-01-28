@@ -22,7 +22,7 @@ public class CustomerMapper {
         model.setCustomerRole(entity.getCustomerRole().name());
         model.setAuthProvider(entity.getAuthProvider().name());
         model.setProfileCompleted(entity.getProfileCompleted());
-        model.setBookingHeaders(entity.getBookingHeaders());
+//        model.setBookingHeaders(entity.getBookingHeaders());
 
         return model;
     }
