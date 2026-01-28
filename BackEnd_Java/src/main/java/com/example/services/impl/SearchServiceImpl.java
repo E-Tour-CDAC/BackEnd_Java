@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,4 +33,10 @@ public class SearchServiceImpl implements SearchService {
     public List<SearchResultDTO> searchByDate(LocalDate fromDate, LocalDate toDate) {
         return searchRepository.searchByDate(fromDate, toDate);
     }
+    
+    @Override
+    public List<SearchResultDTO> searchByLocation(String keyword) {
+        return searchRepository.searchByLocation(keyword);
+    }
+
 }

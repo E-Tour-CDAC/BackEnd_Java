@@ -37,6 +37,14 @@ public class SearchController {
     ) {
         return searchService.searchByCost(minCost, maxCost);
     }
+    
+    @GetMapping("/by-location")
+    public List<SearchResultDTO> searchByLocation(
+            @RequestParam String keyword
+    ) {
+        return searchService.searchByLocation(keyword);
+    }
+
 
     // 🔹 BY DATE (PERIOD)
     @GetMapping("/by-date")
