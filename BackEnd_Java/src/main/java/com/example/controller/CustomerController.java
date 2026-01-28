@@ -37,7 +37,7 @@ public class CustomerController {
         CustomerModel updated = authService.updateCustomerProfile(email, dto);
         return ResponseEntity.ok(updated);
     }
-    
+
     @GetMapping("/id")
     public ResponseEntity<CustomerIdDTO> getProfileID(Principal authentication) {
 
