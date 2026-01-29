@@ -82,7 +82,13 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new RuntimeException("No successful payment found"));
     }
 
-    
+    @Override
+    public Integer findByBookingId(Integer bookingId) {
+
+        return paymentRepository.findByBookingId(bookingId).orElseThrow(()->new RuntimeException("Payment Not Found")).getId();
+    }
+
+
     public PaymentDTO mapToDTO(PaymentMaster payment) {
 
         PaymentDTO dto = new PaymentDTO();

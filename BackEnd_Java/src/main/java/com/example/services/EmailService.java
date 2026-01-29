@@ -1,12 +1,10 @@
 package com.example.services;
 
-
 public interface EmailService {
 
     void sendSimpleEmail(String toEmail, String subject, String body);
 
-    void sendBookingConfirmation(String toEmail, String name, Long confirmationNo);
+    void sendBookingConfirmation(Long paymentId);
 
-    void sendInvoiceWithAttachment(String toEmail, String name, Long invoiceNo, byte[] pdfBytes);
+    void sendInvoiceWithAttachment(Long paymentId, byte[] pdfBytes);
 }
-

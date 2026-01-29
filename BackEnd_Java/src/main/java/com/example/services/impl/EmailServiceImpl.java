@@ -7,7 +7,6 @@ import com.example.services.EmailService;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -17,7 +16,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 @Service
-@Transactional
 public class EmailServiceImpl implements EmailService {
 
 	private final JavaMailSender mailSender;
@@ -26,13 +24,13 @@ public class EmailServiceImpl implements EmailService {
 	@Value("${spring.mail.username}")
 	private String FROM_EMAIL;
 
-	public EmailServiceImpl(JavaMailSender mailSender, PaymentRepository paymentRepository) {
-
+	public EmailServiceImpl(JavaMailSender mailSender,
+							PaymentRepository paymentRepository) {
 		this.mailSender = mailSender;
 		this.paymentRepository = paymentRepository;
 	}
 
-	// ---------------- BASIC MAIL ----------------
+	// ---------- SIMPLE EMAIL ----------
 	@Override
 	public void sendSimpleEmail(String toEmail, String subject, String body) {
 
@@ -45,67 +43,87 @@ public class EmailServiceImpl implements EmailService {
 		mailSender.send(message);
 	}
 
-	// ---------------- BOOKING CONFIRMATION ----------------
+	// ---------- BOOKING CONFIRMATION ----------
 	@Override
-	public void sendBookingConfirmation(String toEmail, String name, Long paymentId) {
+	public void sendBookingConfirmation(Long paymentId) {
 
-		// 🔥 Fetch payment
 		PaymentMaster payment = paymentRepository.findById(paymentId.intValue())
 				.orElseThrow(() -> new RuntimeException("Payment not found"));
 
 		BookingHeader booking = payment.getBooking();
 
-		String dbEmail = booking.getCustomer().getEmail();
-		String dbName = booking.getCustomer().getFirstName();
+		String email = booking.getCustomer().getEmail();
+		String name  = booking.getCustomer().getFirstName();
 
-		// 👇 DEBUG
-		System.out.println("DEBUG email from DB = " + dbEmail);
-
-		if (dbEmail == null || dbEmail.isBlank()) {
-			throw new RuntimeException("Customer email not found in DB for paymentId = " + paymentId);
+		if (email == null || email.isBlank()) {
+			throw new RuntimeException("Customer email not found");
 		}
 
-		String subject = "Booking Confirmed: #" + booking.getId();
+		String subject = "Booking Confirmed – Booking #" + booking.getId();
 
-		String body = "Hello " + dbName + ",\n\n" + "Your booking has been successfully processed.\n" + "Booking ID: "
-				+ booking.getId() + "\n\n" + "Thank you for choosing TourVista!";
+		String body = """
+                Hello %s,
 
-		sendSimpleEmail(dbEmail, subject, body);
+                Your booking has been successfully confirmed.
+
+                Booking ID: %d
+
+                Thank you for choosing VirtuGo!
+
+                Regards,
+                VirtuGo Team
+                """.formatted(name, booking.getId());
+
+		sendSimpleEmail(email, subject, body);
 	}
 
-	// ---------------- INVOICE MAIL (DB EMAIL) ----------------
+	// ---------- INVOICE EMAIL WITH PDF ----------
 	@Override
-	public void sendInvoiceWithAttachment(String toEmail, String name, Long paymentId, byte[] pdfContent) {
+	public void sendInvoiceWithAttachment(Long paymentId, byte[] pdfBytes) {
 
-		// 🔥 Fetch from DB
 		PaymentMaster payment = paymentRepository.findById(paymentId.intValue())
 				.orElseThrow(() -> new RuntimeException("Payment not found"));
 
 		BookingHeader booking = payment.getBooking();
 
-		String dbEmail = booking.getCustomer().getEmail();
+		String email = booking.getCustomer().getEmail();
+		String name  = booking.getCustomer().getFirstName();
 
-		String dbName = booking.getCustomer().getFirstName();
+		if (email == null || email.isBlank()) {
+			throw new RuntimeException("Customer email not found");
+		}
 
 		try {
 			MimeMessage message = mailSender.createMimeMessage();
-
-			MimeMessageHelper helper = new MimeMessageHelper(message, true);
+			MimeMessageHelper helper =
+					new MimeMessageHelper(message, true);
 
 			helper.setFrom(FROM_EMAIL);
-			helper.setTo(dbEmail); // ✅ FROM TABLE
-			helper.setSubject("Invoice - Booking #" + paymentId);
+			helper.setTo(email);
+			helper.setSubject("Invoice – Booking #" + booking.getId());
 
-			helper.setText("Hello " + dbName + ",\n\n" + "Please find your attached invoice.\n\n"
-					+ "Thank you for choosing TourVista!");
+			helper.setText("""
+                    Hello %s,
 
-			helper.addAttachment("Invoice_" + paymentId + ".pdf", new ByteArrayResource(pdfContent));
+                    Please find your invoice attached.
+
+                    Booking ID: %d
+
+                    Thank you for choosing VirtuGo!
+
+                    Regards,
+                    VirtuGo Team
+                    """.formatted(name, booking.getId()));
+
+			helper.addAttachment(
+					"Invoice_" + booking.getId() + ".pdf",
+					new ByteArrayResource(pdfBytes)
+			);
 
 			mailSender.send(message);
 
 		} catch (MessagingException e) {
-			throw new RuntimeException("Error sending email with invoice", e);
+			throw new RuntimeException("Failed to send invoice email", e);
 		}
 	}
-
 }
