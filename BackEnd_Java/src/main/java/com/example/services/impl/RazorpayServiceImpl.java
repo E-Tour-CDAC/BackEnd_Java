@@ -10,9 +10,10 @@ import com.example.repositories.PaymentRepository;
 import com.example.services.PaymentGatewayService;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
-import com.razorpay.Utils;
 import jakarta.transaction.Transactional;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ import java.util.Optional;
 
 @Service
 public class RazorpayServiceImpl implements PaymentGatewayService {
+
+    private static final Logger log =
+            LoggerFactory.getLogger(RazorpayServiceImpl.class);
 
     private final RazorpayClient razorpayClient;
     private final BookingRepository bookingRepository;
@@ -37,16 +41,25 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
         this.bookingRepository = bookingRepository;
         this.paymentRepository = paymentRepository;
     }
-    
+
+    // ================= CONFIRM PAYMENT =================
+
     @Override
     @Transactional
     public void confirmPayment(String orderId, String paymentId, Long amount) {
 
+        log.info("Confirm payment request | orderId={} | paymentId={}",
+                orderId, paymentId);
+
         PaymentMaster payment = paymentRepository
                 .findByTransactionRef(orderId)
-                .orElseThrow(() -> new RuntimeException("Payment not found"));
+                .orElseThrow(() -> {
+                    log.warn("Payment not found for orderId={}", orderId);
+                    return new RuntimeException("Payment not found");
+                });
 
-        if ("SUCCESS".equals(payment.getPaymentStatus())) {
+        if ("SUCCESS".equalsIgnoreCase(payment.getPaymentStatus())) {
+            log.info("Payment already confirmed | orderId={}", orderId);
             return;
         }
 
@@ -55,6 +68,8 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
                 .longValueExact();
 
         if (expectedAmount != amount) {
+            log.error("Amount mismatch | orderId={} | expected={} | received={}",
+                    orderId, expectedAmount, amount);
             throw new RuntimeException("Amount mismatch");
         }
 
@@ -63,24 +78,39 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
         payment.setPaymentDate(Instant.now());
         paymentRepository.save(payment);
 
-        // Status Update
+        log.info("Payment marked SUCCESS | paymentId={} | bookingId={}",
+                paymentId, payment.getBooking().getId());
+
         bookingRepository.updateBookingStatus(
                 payment.getBooking().getId(),
-                2
+                2 // CONFIRMED
         );
+
+        log.info("Booking status updated to CONFIRMED | bookingId={}",
+                payment.getBooking().getId());
     }
 
-
+    // ================= CREATE ORDER =================
 
     @Override
     public CreateOrderResponseDTO createOrder(CreateOrderRequestDTO requestDTO) {
 
+        log.info("Create Razorpay order | bookingId={}",
+                requestDTO.getBookingId());
+
         BookingHeader booking = bookingRepository.findById(requestDTO.getBookingId())
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> {
+                    log.warn("Booking not found | bookingId={}",
+                            requestDTO.getBookingId());
+                    return new RuntimeException("Booking not found");
+                });
 
         // SUCCESS guard
         if (paymentRepository.existsByBooking_IdAndPaymentStatus(
                 booking.getId(), "SUCCESS")) {
+
+            log.warn("Payment already completed | bookingId={}",
+                    booking.getId());
             throw new RuntimeException("Payment already completed");
         }
 
@@ -90,14 +120,18 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
                         booking.getId(), "INITIATED");
 
         if (initiated.isPresent()) {
+
             PaymentMaster p = initiated.get();
 
             long amount = p.getPaymentAmount()
                     .multiply(BigDecimal.valueOf(100))
                     .longValueExact();
 
+            log.info("Reusing INITIATED order | orderId={} | bookingId={}",
+                    p.getTransactionRef(), booking.getId());
+
             return new CreateOrderResponseDTO(
-                    p.getTransactionRef(), // ORDER ID
+                    p.getTransactionRef(),
                     amount,
                     "INR"
             );
@@ -113,6 +147,9 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
         orderRequest.put("receipt", "BOOKING_" + booking.getId());
 
         try {
+            log.debug("Calling Razorpay API | bookingId={} | amount={}",
+                    booking.getId(), amountInPaise);
+
             Order order = razorpayClient.orders.create(orderRequest);
 
             PaymentMaster payment = new PaymentMaster();
@@ -120,10 +157,13 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
             payment.setPaymentAmount(booking.getTotalAmount());
             payment.setPaymentMode("RAZORPAY");
             payment.setPaymentStatus("INITIATED");
-            payment.setTransactionRef(order.get("id")); // ORDER ID
+            payment.setTransactionRef(order.get("id"));
             payment.setPaymentDate(Instant.now());
 
             paymentRepository.save(payment);
+
+            log.info("Razorpay order created | orderId={} | bookingId={}",
+                    order.get("id"), booking.getId());
 
             return new CreateOrderResponseDTO(
                     order.get("id"),
@@ -132,25 +172,28 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
             );
 
         } catch (Exception e) {
+            log.error("Razorpay order creation failed | bookingId={}",
+                    booking.getId(), e);
             throw new RuntimeException("Razorpay order creation failed", e);
         }
     }
+
+    // ================= WEBHOOK =================
 
     @Override
     @Transactional
     public void handleWebhook(String payload, String signature) {
 
+        log.info("Razorpay webhook received");
+
         try {
-        	// TEMP FIX – signature verification OFF
-        	// if (!Utils.verifyWebhookSignature(payload, signature, webhookSecret)) {
-            //   return;
-        	// }
-
-        	System.out.println("🔥 WEBHOOK HIT");
-        	System.out.println(payload);
-
             JSONObject json = new JSONObject(payload);
-            if (!"payment.captured".equals(json.optString("event"))) return;
+
+            if (!"payment.captured".equals(json.optString("event"))) {
+                log.debug("Ignoring webhook event | event={}",
+                        json.optString("event"));
+                return;
+            }
 
             JSONObject entity = json.getJSONObject("payload")
                     .getJSONObject("payment")
@@ -160,23 +203,33 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
             String razorpayPaymentId = entity.getString("id");
             long amount = entity.getLong("amount");
 
-            // Lookup by ORDER ID (INITIATED state)
+            log.info("Processing webhook | orderId={} | paymentId={}",
+                    razorpayOrderId, razorpayPaymentId);
+
             PaymentMaster payment = paymentRepository
                     .findByTransactionRef(razorpayOrderId)
-                    .orElseThrow(() -> new RuntimeException("Payment not found"));
+                    .orElseThrow(() -> {
+                        log.warn("Payment not found for webhook | orderId={}",
+                                razorpayOrderId);
+                        return new RuntimeException("Payment not found");
+                    });
 
-            // Idempotency
-            if ("SUCCESS".equals(payment.getPaymentStatus())) return;
+            if ("SUCCESS".equalsIgnoreCase(payment.getPaymentStatus())) {
+                log.info("Webhook ignored (idempotent) | orderId={}",
+                        razorpayOrderId);
+                return;
+            }
 
             long expected = payment.getPaymentAmount()
                     .multiply(BigDecimal.valueOf(100))
                     .longValueExact();
 
             if (expected != amount) {
+                log.error("Webhook amount mismatch | orderId={} | expected={} | received={}",
+                        razorpayOrderId, expected, amount);
                 throw new RuntimeException("Amount mismatch");
             }
 
-            // overwrite transactionRef with PAYMENT ID
             payment.setTransactionRef(razorpayPaymentId);
             payment.setPaymentStatus("SUCCESS");
             payment.setPaymentDate(Instant.now());
@@ -189,7 +242,11 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
 
             bookingRepository.save(booking);
 
+            log.info("Webhook processed successfully | bookingId={} | paymentId={}",
+                    booking.getId(), razorpayPaymentId);
+
         } catch (Exception e) {
+            log.error("Webhook processing failed", e);
             throw new RuntimeException("Webhook processing failed", e);
         }
     }

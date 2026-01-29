@@ -2,8 +2,6 @@ package com.example.services;
 
 import com.example.entities.PaymentMaster;
 
-import java.util.Optional;
-
 public interface PaymentService {
 
     PaymentMaster makePayment(
@@ -17,6 +15,4 @@ public interface PaymentService {
     PaymentMaster getPaymentById(Integer paymentId);
 
     PaymentMaster getSuccessfulPayment(Integer bookingId);
-
-    Integer findByBookingId(Integer bookingId);
 }

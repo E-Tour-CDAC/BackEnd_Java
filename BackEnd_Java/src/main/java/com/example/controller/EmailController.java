@@ -1,15 +1,18 @@
 package com.example.controller;
 
+import org.springframework.web.bind.annotation.*;
+
 import com.example.services.EmailService;
 import com.example.services.InvoicePdfService;
 
-import org.springframework.web.bind.annotation.*;
 
+//
 @RestController
 @RequestMapping("/api/email")
 public class EmailController {
 
     private final EmailService emailService;
+
     private final InvoicePdfService invoicePdfService;
 
     public EmailController(EmailService emailService,
@@ -18,26 +21,31 @@ public class EmailController {
         this.invoicePdfService = invoicePdfService;
     }
 
-    // ✅ Test booking confirmation
-    @PostMapping("/booking-confirmation")
-    public String sendBookingMail(@RequestParam Long paymentId) {
+    // TEST booking mail (kept as-is)
+    @PostMapping("/test-confirmation")
+    public String testEmail(@RequestParam Integer paymentId) {
 
-        emailService.sendBookingConfirmation(paymentId);
+        emailService.sendBookingConfirmation(
+                null,
+                null,
+                paymentId.longValue());
 
-        return "Booking confirmation email sent for paymentId = " + paymentId;
+        return "Booking confirmation email sent using DB email for paymentId = "
+                + paymentId;
     }
 
-    // ✅ Test invoice mail
-    @PostMapping("/invoice")
-    public String sendInvoiceMail(@RequestParam Integer paymentId) {
+    // 🔥 Invoice email — DB email will be used
+    @PostMapping("/test-invoice")
+    public String testInvoice(@RequestParam Integer paymentId) {
 
-        byte[] pdf = invoicePdfService.generateInvoice(paymentId);
+        byte[] simulatedPdf = invoicePdfService.generateInvoice(paymentId);
 
         emailService.sendInvoiceWithAttachment(
+                null,
+                null,
                 paymentId.longValue(),
-                pdf
-        );
+                simulatedPdf);
 
-        return "Invoice email sent for paymentId = " + paymentId;
+        return "Invoice PDF sent using DB email for paymentId = " + paymentId;
     }
 }

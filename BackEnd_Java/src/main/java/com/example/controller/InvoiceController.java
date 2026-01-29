@@ -1,7 +1,5 @@
 package com.example.controller;
 
-import com.example.services.PaymentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +13,13 @@ public class InvoiceController {
 
     private final InvoicePdfService invoiceService;
 
-    @Autowired
-    private final PaymentService paymentService;
-
-    public InvoiceController(InvoicePdfService invoiceService, PaymentService paymentService) {
+    public InvoiceController(InvoicePdfService invoiceService) {
         this.invoiceService = invoiceService;
-        this.paymentService = paymentService;
     }
 
-    @GetMapping("/{bookingId}/download")
+    @GetMapping("/{paymentId}/download")
     public ResponseEntity<byte[]> downloadInvoice(
-            @PathVariable Integer bookingId) {
-
-        int paymentId = paymentService.findByBookingId(bookingId);
+            @PathVariable Integer paymentId) {
 
         byte[] pdf = invoiceService.generateInvoice(paymentId);
 

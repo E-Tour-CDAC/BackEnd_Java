@@ -1,10 +1,7 @@
 package com.example.services.impl;
 
 
-import com.example.dto.PassengerDTO;
 import com.example.services.InvoicePdfService;
-import com.example.services.PassengerService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.entities.BookingHeader;
@@ -16,8 +13,6 @@ import com.lowagie.text.pdf.PdfCell;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-
-import java.util.List;
 
 import jakarta.transaction.Transactional;
 
@@ -32,12 +27,8 @@ public class InvoiceServiceImpl implements InvoicePdfService {
 
     private final PaymentRepository paymentRepo;
 
-    @Autowired
-    private final PassengerService passengerService;
-
-    public InvoiceServiceImpl(PaymentRepository paymentRepo, PassengerService passengerService) {
+    public InvoiceServiceImpl(PaymentRepository paymentRepo) {
         this.paymentRepo = paymentRepo;
-        this.passengerService = passengerService;
     }
 
     @Override
@@ -51,9 +42,6 @@ public class InvoiceServiceImpl implements InvoicePdfService {
         }
 
         BookingHeader booking = payment.getBooking();
-
-        List<PassengerDTO> passengers =
-                passengerService.getPassengersByBookingId(booking.getId());
 
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -78,7 +66,7 @@ public class InvoiceServiceImpl implements InvoicePdfService {
             infoTable.setWidths(new float[]{1, 1});
 
             PdfPCell companyCell = new PdfPCell(new Phrase(
-                    "VirtuGo\n SM VITA\nMumbai, India\n📞 +91-9326923786\n🌐 www.VirtuGo.com",
+                    "TourVista\n123 Travel Street\nMumbai, India\n📞 +91-9876543210\n🌐 www.tourvista.com",
                     normalFont));
             companyCell.setBorder(Rectangle.NO_BORDER);
             infoTable.addCell(companyCell);
@@ -119,31 +107,6 @@ public class InvoiceServiceImpl implements InvoicePdfService {
             document.add(invoiceTable);
             document.add(Chunk.NEWLINE);
 
-            // ===== Passenger Details =====
-            Paragraph paxTitle = new Paragraph("Passenger Details", boldFont);
-            paxTitle.setSpacingBefore(15);
-            paxTitle.setSpacingAfter(8);
-            document.add(paxTitle);
-
-            PdfPTable paxTable = new PdfPTable(4);
-            paxTable.setWidthPercentage(100);
-            paxTable.setWidths(new float[]{3, 2, 2, 2});
-
-            addHeader(paxTable, "Name", boldFont);
-            addHeader(paxTable, "Type", boldFont);
-            addHeader(paxTable, "DOB", boldFont);
-            addHeader(paxTable, "Amount (₹)", boldFont);
-
-            for (PassengerDTO p : passengers) {
-                paxTable.addCell(new PdfPCell(new Phrase(p.getPaxName(), normalFont)));
-                paxTable.addCell(centerCell(p.getPaxType(), normalFont));
-                paxTable.addCell(centerCell(p.getPaxBirthdate().toString(), normalFont));
-                paxTable.addCell(rightCell(p.getPaxAmount().toString(), normalFont));
-            }
-
-            document.add(paxTable);
-            document.add(Chunk.NEWLINE);
-
             // ===== Total Section =====
             PdfPTable totalTable = new PdfPTable(2);
             totalTable.setWidthPercentage(40);
@@ -152,7 +115,7 @@ public class InvoiceServiceImpl implements InvoicePdfService {
             addNoBorder(totalTable, "Subtotal:", normalFont);
             addRightNoBorder(totalTable, booking.getTourAmount().toString(), normalFont);
 
-            addNoBorder(totalTable, "Tax (10%):", normalFont);
+            addNoBorder(totalTable, "Tax (5%):", normalFont);
             addRightNoBorder(totalTable, booking.getTaxes().toString(), normalFont);
 
             addNoBorder(totalTable, "Total Amount:", boldFont);
@@ -163,8 +126,8 @@ public class InvoiceServiceImpl implements InvoicePdfService {
 
             // ===== Footer =====
             Paragraph footer = new Paragraph(
-                    "\nThank you for choosing VirtuGO!\n" +
-                    "Your gateway to amazing experiences.\nwww.etourvirtugo.com",
+                    "\nThank you for choosing TourVista!\n" +
+                    "Your gateway to amazing experiences.\nwww.tourvista.com",
                     new Font(Font.HELVETICA, 10, Font.ITALIC, Color.GRAY));
             footer.setAlignment(Element.ALIGN_CENTER);
             footer.setSpacingBefore(20);

@@ -1,7 +1,6 @@
 package com.example.repositories;
 
 import com.example.entities.PaymentMaster;
-import com.razorpay.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,6 +15,4 @@ public interface PaymentRepository extends JpaRepository<PaymentMaster, Integer>
     Optional<PaymentMaster> findByTransactionRef(String transactionRef);
 
     List<PaymentMaster> findByBooking_Id(Integer bookingId);
-
-    Optional<PaymentMaster> findByBookingId(Integer bookingId);
 }
