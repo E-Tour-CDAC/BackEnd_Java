@@ -41,9 +41,6 @@ public class AuthService {
     private EmailService emailService;
 
 
-
-    
-
     //REGISTER (LOCAL)
     public CustomerModel register(CustomerDTO dto) {
         logger.info("Attempting to register user with email: {}", dto.getEmail());
@@ -146,26 +143,6 @@ public class AuthService {
 
         return model;
     }
-
-
-    //GOOGLE LOGIN
-//    public String googleLogin(GoogleUserPayload payload) {
-//
-//        CustomerMaster user = repository.findByEmail(payload.getEmail())
-//                .orElseGet(() -> {
-//                    CustomerMaster u = new CustomerMaster();
-//                    u.setEmail(payload.getEmail());
-//                    u.setFirstName(payload.getFirstName());
-//                    u.setLastName(payload.getLastName());
-//                    u.setCustomerRole(CustomerRole.CUSTOMER);
-//                    u.setAuthProvider(AuthProvider.GOOGLE);
-//                    u.setProfileCompleted(true);
-//                    u.setPassword(null);
-//                    return repository.save(u);
-//                });
-//
-//        return jwtUtil.generateToken(user.getEmail(), user.getCustomerRole().name());
-//    }
 
     //update profile
     public CustomerModel updateCustomerProfile(String email, CustomerDTO dto) {
