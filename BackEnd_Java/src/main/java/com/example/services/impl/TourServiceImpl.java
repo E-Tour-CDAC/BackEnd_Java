@@ -35,14 +35,14 @@ public class TourServiceImpl implements TourService {
     public List<TourDTO> getHomePageTours() {
 
         List<Integer> categoryIds = category.getHomeCategoryIds();
-        
+
         if (categoryIds == null || categoryIds.isEmpty()) {
             return List.of();
         }
 
         return fetchTours(categoryIds);
     }
- // 🔹 /api/tours/{subcat}
+    // 🔹 /api/tours/{subcat}
     @Override
     public List<TourDTO> getToursBySubCategory(String subCategoryCode) {
 
@@ -61,6 +61,13 @@ public class TourServiceImpl implements TourService {
         return tourRepository.findByCategory_IdIn(categoryIds)
                 .stream()
                 .map(this::convertToDTO)
+                .collect(Collectors.toMap(
+                        TourDTO::getCategoryId,       // Key: Category ID
+                        tour -> tour,                 // Value: The whole Tour object
+                        (existing, replacement) -> existing // Merge function: Keep the first found
+                ))
+                .values()
+                .stream()
                 .collect(Collectors.toList());
     }
 
@@ -71,7 +78,7 @@ public class TourServiceImpl implements TourService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
- // In TourServiceImpl.java
+    // In TourServiceImpl.java
     @Override
     public List<TourDTO> getToursByIds(List<Integer> tourIds) {
         return tourRepository.findAllById(tourIds)
@@ -105,8 +112,8 @@ public class TourServiceImpl implements TourService {
                 .map(TourMaster::getId)
                 .orElseThrow(() ->
                         new RuntimeException(
-                            "Tour not found for categoryId="
-                            + categoryId + " and departureId=" + departureId
+                                "Tour not found for categoryId="
+                                        + categoryId + " and departureId=" + departureId
                         )
                 );
     }
@@ -121,8 +128,9 @@ public class TourServiceImpl implements TourService {
         dto.setCategoryName(tour.getCategory().getCategoryName());
         dto.setSubCategoryCode(tour.getCategory().getSubcatCode());
         dto.setCategoryCode(tour.getCategory().getCatCode());
+        dto.setImagePath(tour.getCategory().getImagePath());
         dto.setJumpFlag(tour.getCategory().getJumpFlag());
-        
+
         dto.setDepartureId(tour.getDeparture().getId());
         Integer categoryId = tour.getCategory().getId();
 
