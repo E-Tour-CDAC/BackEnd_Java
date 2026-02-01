@@ -4,6 +4,7 @@ package com.example.services.impl;
 
 import com.example.dto.BookingCreateRequestDTO;
 import com.example.dto.BookingResponseDTO;
+import com.example.dto.TourGuideDTO;
 import com.example.entities.*;
 import com.example.repositories.BookingRepository;
 import com.example.services.BookingService;
@@ -96,6 +97,21 @@ public class BookingServicesImpl implements BookingService {
         // ✅ STATUS STRING
         if (booking.getStatus() != null) {
             dto.setStatus(booking.getStatus().getStatusName());
+        }
+
+        // ✅ TOUR GUIDES
+        if (booking.getTour() != null && booking.getTour().getTourGuides() != null) {
+            List<TourGuideDTO> guides = booking.getTour().getTourGuides().stream()
+                    .map(g -> {
+                        TourGuideDTO gDto = new TourGuideDTO();
+                        gDto.setId(g.getId());
+                        gDto.setName(g.getName());
+                        gDto.setEmail(g.getEmail());
+                        gDto.setPhone(g.getPhone());
+                        return gDto;
+                    })
+                    .collect(Collectors.toList());
+            dto.setGuides(guides);
         }
 
         return dto;

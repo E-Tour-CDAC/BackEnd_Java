@@ -2,6 +2,7 @@ package com.example.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class BookingResponseDTO {
 
@@ -10,6 +11,7 @@ public class BookingResponseDTO {
     private Integer noOfPax;
     private BigDecimal totalAmount;
     private String status;
+    private List<TourGuideDTO> guides;
 
     // getters & setters
     public Integer getBookingId() {
@@ -50,5 +52,13 @@ public class BookingResponseDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<TourGuideDTO> getGuides() {
+        return guides;
+    }
+
+    public void setGuides(List<TourGuideDTO> guides) {
+        this.guides = guides;
     }
 }

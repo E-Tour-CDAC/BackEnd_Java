@@ -1,6 +1,5 @@
 package com.example.services.impl;
 
-
 import com.example.dto.PassengerDTO;
 import com.example.services.InvoicePdfService;
 import com.example.services.PassengerService;
@@ -18,6 +17,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
 import java.util.List;
+import java.util.Set;
 
 import jakarta.transaction.Transactional;
 
@@ -52,8 +52,7 @@ public class InvoiceServiceImpl implements InvoicePdfService {
 
         BookingHeader booking = payment.getBooking();
 
-        List<PassengerDTO> passengers =
-                passengerService.getPassengersByBookingId(booking.getId());
+        List<PassengerDTO> passengers = passengerService.getPassengersByBookingId(booking.getId());
 
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -75,7 +74,7 @@ public class InvoiceServiceImpl implements InvoicePdfService {
             // ===== Company + Billing Info =====
             PdfPTable infoTable = new PdfPTable(2);
             infoTable.setWidthPercentage(100);
-            infoTable.setWidths(new float[]{1, 1});
+            infoTable.setWidths(new float[] { 1, 1 });
 
             PdfPCell companyCell = new PdfPCell(new Phrase(
                     "VirtuGo\n SM VITA\nMumbai, India\n📞 +91-9326923786\n🌐 www.VirtuGo.com",
@@ -83,13 +82,12 @@ public class InvoiceServiceImpl implements InvoicePdfService {
             companyCell.setBorder(Rectangle.NO_BORDER);
             infoTable.addCell(companyCell);
 
-            String customerName =
-                    booking.getCustomer().getFirstName() + " " +
+            String customerName = booking.getCustomer().getFirstName() + " " +
                     booking.getCustomer().getLastName();
 
             PdfPCell billingCell = new PdfPCell(new Phrase(
                     "Billed To:\n" + customerName +
-                    "\nBooking Date: " + booking.getBookingDate(),
+                            "\nBooking Date: " + booking.getBookingDate(),
                     normalFont));
             billingCell.setBorder(Rectangle.NO_BORDER);
             billingCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -101,15 +99,14 @@ public class InvoiceServiceImpl implements InvoicePdfService {
             // ===== Invoice Table =====
             PdfPTable invoiceTable = new PdfPTable(4);
             invoiceTable.setWidthPercentage(100);
-            invoiceTable.setWidths(new float[]{3, 1, 2, 2});
+            invoiceTable.setWidths(new float[] { 3, 1, 2, 2 });
 
             addHeader(invoiceTable, "Tour Package", boldFont);
             addHeader(invoiceTable, "Passengers", boldFont);
             addHeader(invoiceTable, "Base Price (₹)", boldFont);
             addHeader(invoiceTable, "Total Price (₹)", boldFont);
 
-            String tourName =
-                    booking.getTour().getCategory().getCategoryName();
+            String tourName = booking.getTour().getCategory().getCategoryName();
 
             invoiceTable.addCell(new PdfPCell(new Phrase(tourName, normalFont)));
             invoiceTable.addCell(centerCell(String.valueOf(booking.getNoOfPax()), normalFont));
@@ -127,7 +124,7 @@ public class InvoiceServiceImpl implements InvoicePdfService {
 
             PdfPTable paxTable = new PdfPTable(4);
             paxTable.setWidthPercentage(100);
-            paxTable.setWidths(new float[]{3, 2, 2, 2});
+            paxTable.setWidths(new float[] { 3, 2, 2, 2 });
 
             addHeader(paxTable, "Name", boldFont);
             addHeader(paxTable, "Type", boldFont);
@@ -143,6 +140,31 @@ public class InvoiceServiceImpl implements InvoicePdfService {
 
             document.add(paxTable);
             document.add(Chunk.NEWLINE);
+
+            // ===== Tour Guide Details =====
+            Set<com.example.entities.TourGuide> guides = booking.getTour().getTourGuides();
+            if (guides != null && !guides.isEmpty()) {
+                Paragraph guideTitle = new Paragraph("Tour Guide Information", boldFont);
+                guideTitle.setSpacingBefore(15);
+                guideTitle.setSpacingAfter(8);
+                document.add(guideTitle);
+
+                PdfPTable guideTable = new PdfPTable(3);
+                guideTable.setWidthPercentage(100);
+                guideTable.setWidths(new float[] { 3, 3, 3 });
+
+                addHeader(guideTable, "Name", boldFont);
+                addHeader(guideTable, "Email", boldFont);
+                addHeader(guideTable, "Phone", boldFont);
+
+                for (com.example.entities.TourGuide g : guides) {
+                    guideTable.addCell(new PdfPCell(new Phrase(g.getName(), normalFont)));
+                    guideTable.addCell(new PdfPCell(new Phrase(g.getEmail(), normalFont)));
+                    guideTable.addCell(new PdfPCell(new Phrase(g.getPhone(), normalFont)));
+                }
+                document.add(guideTable);
+                document.add(Chunk.NEWLINE);
+            }
 
             // ===== Total Section =====
             PdfPTable totalTable = new PdfPTable(2);
@@ -164,7 +186,7 @@ public class InvoiceServiceImpl implements InvoicePdfService {
             // ===== Footer =====
             Paragraph footer = new Paragraph(
                     "\nThank you for choosing VirtuGO!\n" +
-                    "Your gateway to amazing experiences.\nwww.etourvirtugo.com",
+                            "Your gateway to amazing experiences.\nwww.etourvirtugo.com",
                     new Font(Font.HELVETICA, 10, Font.ITALIC, Color.GRAY));
             footer.setAlignment(Element.ALIGN_CENTER);
             footer.setSpacingBefore(20);

@@ -9,7 +9,9 @@ public class TourDTO {
 
  // ✅ ADD THIS
     private Boolean jumpFlag;
-
+    // Category
+    private Integer categoryId;
+    private String CategoryCode;
     // getters & setters
     public Boolean getJumpFlag() {
         return jumpFlag;
@@ -18,9 +20,6 @@ public class TourDTO {
     public void setJumpFlag(Boolean jumpFlag) {
         this.jumpFlag = jumpFlag;
     }
-    // Category
-    private Integer categoryId;
-    private String CategoryCode;
     public String getCategoryCode() {
 		return CategoryCode;
 	}
