@@ -5,8 +5,6 @@ import java.util.List;
 public class TourDTO {
 
     private Integer id;
-    
-
  // ✅ ADD THIS
     private Boolean jumpFlag;
     // Category
