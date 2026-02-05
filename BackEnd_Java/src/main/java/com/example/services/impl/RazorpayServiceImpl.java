@@ -3,7 +3,6 @@ package com.example.services.impl;
 import com.example.dto.CreateOrderRequestDTO;
 import com.example.dto.CreateOrderResponseDTO;
 import com.example.entities.BookingHeader;
-import com.example.entities.BookingStatusMaster;
 import com.example.entities.PaymentMaster;
 import com.example.repositories.BookingRepository;
 import com.example.repositories.PaymentRepository;
@@ -31,13 +30,13 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
     private String webhookSecret;
 
     public RazorpayServiceImpl(RazorpayClient razorpayClient,
-                               BookingRepository bookingRepository,
-                               PaymentRepository paymentRepository) {
+            BookingRepository bookingRepository,
+            PaymentRepository paymentRepository) {
         this.razorpayClient = razorpayClient;
         this.bookingRepository = bookingRepository;
         this.paymentRepository = paymentRepository;
     }
-    
+
     @Override
     @Transactional
     public void confirmPayment(String orderId, String paymentId, Long amount) {
@@ -63,14 +62,14 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
         payment.setPaymentDate(Instant.now());
         paymentRepository.save(payment);
 
+        System.out.println(
+                "✅ confirmPayment: Updating Booking ID " + payment.getBooking().getId() + " to status CONFIRMED (2)");
+
         // Status Update
         bookingRepository.updateBookingStatus(
                 payment.getBooking().getId(),
-                2
-        );
+                2);
     }
-
-
 
     @Override
     public CreateOrderResponseDTO createOrder(CreateOrderRequestDTO requestDTO) {
@@ -85,9 +84,8 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
         }
 
         // INITIATED reuse
-        Optional<PaymentMaster> initiated =
-                paymentRepository.findByBooking_IdAndPaymentStatus(
-                        booking.getId(), "INITIATED");
+        Optional<PaymentMaster> initiated = paymentRepository.findByBooking_IdAndPaymentStatus(
+                booking.getId(), "INITIATED");
 
         if (initiated.isPresent()) {
             PaymentMaster p = initiated.get();
@@ -99,8 +97,7 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
             return new CreateOrderResponseDTO(
                     p.getTransactionRef(), // ORDER ID
                     amount,
-                    "INR"
-            );
+                    "INR");
         }
 
         long amountInPaise = booking.getTotalAmount()
@@ -128,8 +125,7 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
             return new CreateOrderResponseDTO(
                     order.get("id"),
                     amountInPaise,
-                    "INR"
-            );
+                    "INR");
 
         } catch (Exception e) {
             throw new RuntimeException("Razorpay order creation failed", e);
@@ -141,16 +137,17 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
     public void handleWebhook(String payload, String signature) {
 
         try {
-        	// TEMP FIX – signature verification OFF
-        	// if (!Utils.verifyWebhookSignature(payload, signature, webhookSecret)) {
-            //   return;
-        	// }
+            // TEMP FIX – signature verification OFF
+            // if (!Utils.verifyWebhookSignature(payload, signature, webhookSecret)) {
+            // return;
+            // }
 
-        	System.out.println("🔥 WEBHOOK HIT");
-        	System.out.println(payload);
+            System.out.println("🔥 WEBHOOK HIT");
+            System.out.println(payload);
 
             JSONObject json = new JSONObject(payload);
-            if (!"payment.captured".equals(json.optString("event"))) return;
+            if (!"payment.captured".equals(json.optString("event")))
+                return;
 
             JSONObject entity = json.getJSONObject("payload")
                     .getJSONObject("payment")
@@ -166,7 +163,8 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
                     .orElseThrow(() -> new RuntimeException("Payment not found"));
 
             // Idempotency
-            if ("SUCCESS".equals(payment.getPaymentStatus())) return;
+            if ("SUCCESS".equals(payment.getPaymentStatus()))
+                return;
 
             long expected = payment.getPaymentAmount()
                     .multiply(BigDecimal.valueOf(100))
@@ -182,14 +180,15 @@ public class RazorpayServiceImpl implements PaymentGatewayService {
             payment.setPaymentDate(Instant.now());
             paymentRepository.save(payment);
 
-            BookingHeader booking = payment.getBooking();
-            BookingStatusMaster status = new BookingStatusMaster();
-            status.setId(2); // CONFIRMED
-            booking.setStatus(status);
+            System.out.println(
+                    "✅ Webhook: Updating Booking ID " + payment.getBooking().getId() + " to status CONFIRMED (2)");
 
-            bookingRepository.save(booking);
+            bookingRepository.updateBookingStatus(
+                    payment.getBooking().getId(),
+                    2);
 
         } catch (Exception e) {
+            System.err.println("❌ Webhook processing failed: " + e.getMessage());
             throw new RuntimeException("Webhook processing failed", e);
         }
     }

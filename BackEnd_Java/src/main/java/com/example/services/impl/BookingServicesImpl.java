@@ -1,7 +1,5 @@
 package com.example.services.impl;
 
-
-
 import com.example.dto.BookingCreateRequestDTO;
 import com.example.dto.BookingResponseDTO;
 import com.example.dto.TourGuideDTO;
@@ -16,7 +14,10 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.transaction.Transactional;
+
 @Service
+@Transactional
 public class BookingServicesImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
@@ -24,11 +25,11 @@ public class BookingServicesImpl implements BookingService {
 
     public BookingServicesImpl(
             BookingRepository bookingRepository,
-            EntityManager entityManager
-    ) {
+            EntityManager entityManager) {
         this.bookingRepository = bookingRepository;
         this.entityManager = entityManager;
     }
+
     // NEW METHOD
     @Override
     public List<BookingResponseDTO> getBookingsByCustomerId(Integer customerId) {
@@ -42,21 +43,16 @@ public class BookingServicesImpl implements BookingService {
     public BookingResponseDTO saveBooking(BookingCreateRequestDTO dto) {
 
         // ✅ ID-only references (NO FETCH)
-        CustomerMaster customerRef =
-                entityManager.getReference(CustomerMaster.class, dto.getCustomerId());
+        CustomerMaster customerRef = entityManager.getReference(CustomerMaster.class, dto.getCustomerId());
 
-        TourMaster tourRef =
-                entityManager.getReference(TourMaster.class, dto.getTourId());
+        TourMaster tourRef = entityManager.getReference(TourMaster.class, dto.getTourId());
 
-        BookingStatusMaster statusRef =
-                entityManager.getReference(BookingStatusMaster.class, dto.getStatusId());
+        BookingStatusMaster statusRef = entityManager.getReference(BookingStatusMaster.class, dto.getStatusId());
 
         // ✅ Safe BigDecimal handling
-        BigDecimal tourAmount =
-                dto.getTourAmount() != null ? dto.getTourAmount() : BigDecimal.ZERO;
+        BigDecimal tourAmount = dto.getTourAmount() != null ? dto.getTourAmount() : BigDecimal.ZERO;
 
-        BigDecimal taxes =
-                dto.getTaxes() != null ? dto.getTaxes() : BigDecimal.ZERO;
+        BigDecimal taxes = dto.getTaxes() != null ? dto.getTaxes() : BigDecimal.ZERO;
 
         // ✅ Create BookingHeader
         BookingHeader booking = new BookingHeader();
@@ -67,7 +63,6 @@ public class BookingServicesImpl implements BookingService {
         booking.setNoOfPax(dto.getNoOfPax());
         booking.setTourAmount(tourAmount);
         booking.setTaxes(taxes);
-        
 
         // ✅ Save
         BookingHeader saved = bookingRepository.save(booking);
@@ -116,6 +111,7 @@ public class BookingServicesImpl implements BookingService {
 
         return dto;
     }
+
     @Override
     public Integer getPaymentStatus(Integer bookingId) {
 
