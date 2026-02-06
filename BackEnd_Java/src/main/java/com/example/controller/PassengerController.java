@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/passengers")
+@RequestMapping("/api/passenger")
 public class PassengerController {
 
     @Autowired
@@ -20,13 +20,12 @@ public class PassengerController {
     public ResponseEntity<PassengerDTO> addPassenger(@RequestBody PassengerDTO passengerDTO) {
         return ResponseEntity.ok(passengerService.addPassenger(passengerDTO));
     }
-    
+
     @GetMapping("/booking/{bookingId}")
     public ResponseEntity<List<PassengerDTO>> getPassengersByBooking(@PathVariable Integer bookingId) {
         return ResponseEntity.ok(passengerService.getPassengersByBookingId(bookingId));
     }
 
-    
     @GetMapping("/{id}")
     public ResponseEntity<PassengerDTO> getPassenger(@PathVariable Integer id) {
         return ResponseEntity.ok(passengerService.getPassengerById(id));

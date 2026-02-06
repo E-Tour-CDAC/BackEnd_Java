@@ -21,8 +21,7 @@ public class RegistrationClientController {
     public ResponseEntity<CustomerModel> registerViaClient(
             @RequestBody CustomerDTO dto) {
 
-        CustomerModel response =
-                registrationClientService.registerCustomer(dto);
+        CustomerModel response = registrationClientService.registerCustomer(dto);
 
         return ResponseEntity.ok(response);
     }

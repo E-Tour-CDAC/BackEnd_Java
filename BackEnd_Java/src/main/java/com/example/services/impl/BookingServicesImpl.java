@@ -124,4 +124,12 @@ public class BookingServicesImpl implements BookingService {
         return statusId;
     }
 
+    @Override
+    public List<BookingResponseDTO> getAllBookings() {
+        return bookingRepository.findAll()
+                .stream()
+                .map(this::mapToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
 }

@@ -30,6 +30,7 @@ public class TourServiceImpl implements TourService {
     private TourGuideRepository tourGuideRepository;
     @Autowired
     private CategoryService category;
+
     // 🔹 /api/tours
     @Override
     public List<TourDTO> getHomePageTours() {
@@ -42,12 +43,12 @@ public class TourServiceImpl implements TourService {
 
         return fetchTours(categoryIds);
     }
+
     // 🔹 /api/tours/{subcat}
     @Override
     public List<TourDTO> getToursBySubCategory(String subCategoryCode) {
 
-        List<Integer> categoryIds =
-                category.getCategoryIdsBySubcatCode(subCategoryCode);
+        List<Integer> categoryIds = category.getCategoryIdsBySubcatCode(subCategoryCode);
 
         if (categoryIds == null || categoryIds.isEmpty()) {
             return List.of();
@@ -57,13 +58,21 @@ public class TourServiceImpl implements TourService {
     }
 
     // 🔹 COMMON METHOD
+    @Override
+    public List<TourDTO> getToursByCategoryIds(List<Integer> categoryIds) {
+        if (categoryIds == null || categoryIds.isEmpty()) {
+            return List.of();
+        }
+        return fetchTours(categoryIds);
+    }
+
     private List<TourDTO> fetchTours(List<Integer> categoryIds) {
         return tourRepository.findByCategory_IdIn(categoryIds)
                 .stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toMap(
-                        TourDTO::getCategoryId,       // Key: Category ID
-                        tour -> tour,                 // Value: The whole Tour object
+                        TourDTO::getCategoryId, // Key: Category ID
+                        tour -> tour, // Value: The whole Tour object
                         (existing, replacement) -> existing // Merge function: Keep the first found
                 ))
                 .values()
@@ -71,13 +80,13 @@ public class TourServiceImpl implements TourService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public List<TourDTO> getAllTours() {
         return tourRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     // In TourServiceImpl.java
     @Override
     public List<TourDTO> getToursByIds(List<Integer> tourIds) {
@@ -95,6 +104,7 @@ public class TourServiceImpl implements TourService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     @Override
     public TourDTO getTourById(Integer id) {
         return tourRepository.findById(id)
@@ -105,17 +115,13 @@ public class TourServiceImpl implements TourService {
     @Override
     public Integer getTourIdByCategoryAndDeparture(
             Integer categoryId,
-            Integer departureId
-    ) {
+            Integer departureId) {
         return tourRepository
                 .findByCategory_IdAndDeparture_Id(categoryId, departureId)
                 .map(TourMaster::getId)
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Tour not found for categoryId="
-                                        + categoryId + " and departureId=" + departureId
-                        )
-                );
+                .orElseThrow(() -> new RuntimeException(
+                        "Tour not found for categoryId="
+                                + categoryId + " and departureId=" + departureId));
     }
 
     private TourDTO convertToDTO(TourMaster tour) {

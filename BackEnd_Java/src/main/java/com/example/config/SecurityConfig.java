@@ -1,4 +1,5 @@
 package com.example.config;
+
 import com.example.filter.JwtAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,27 +24,24 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.cors(Customizer.withDefaults())
-            .csrf(csrf -> csrf.disable())
-                .formLogin(form -> form.disable())   // form login disable temp
-                .httpBasic(basic -> basic.disable())   // basic disable
+                .csrf(csrf -> csrf.disable())
+                .formLogin(form -> form.disable()) // form login disable temp
+                .httpBasic(basic -> basic.disable()) // basic disable
                 .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/**").permitAll()
-                    .anyRequest().permitAll() //abhi rehne de
-                        // .anyRequest().authenticated()
-            ).oauth2Login(oauth -> oauth
-                        .successHandler(oAuth2SuccessHandler)
-                )
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .anyRequest().permitAll() // abhi rehne de
+                // .anyRequest().authenticated()
+                ).oauth2Login(oauth -> oauth
+                        .successHandler(oAuth2SuccessHandler))
 
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-            .sessionManagement(sess ->
-                    sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            );
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
     }
 
-//    @Bean
-//    public AuthenticationManager authenticationManager() {
-//        return authentication -> authentication;
-//    }
+    // @Bean
+    // public AuthenticationManager authenticationManager() {
+    // return authentication -> authentication;
+    // }
 }

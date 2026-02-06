@@ -19,26 +19,36 @@ public class TourController {
     public List<TourDTO> getHomePageTours() {
         return tourService.getHomePageTours();
     }
-    
+
     @GetMapping("/tour-id")
     public Integer getTourId(
             @RequestParam Integer categoryId,
-            @RequestParam Integer departureId
-    ) {
+            @RequestParam Integer departureId) {
         return tourService.getTourIdByCategoryAndDeparture(categoryId, departureId);
     }
 
-
-    // 🔹 SUBCATEGORY PAGE
-    @GetMapping("/{subcat}")
-    public List<TourDTO> getToursBySubCategory(
-            @PathVariable String subcat) {
-        return tourService.getToursBySubCategory(subcat);
+    // 🔹 DYNAMIC TOUR FETCH (Handles both ID and Subcategory)
+    @GetMapping("/{identifier}")
+    public List<TourDTO> getTours(@PathVariable String identifier) {
+        try {
+            // Try as Category ID first
+            Integer id = Integer.parseInt(identifier);
+            TourDTO tour = tourService.getTourById(id);
+            return List.of(tour);
+        } catch (NumberFormatException e) {
+            // If not a number, treat as Subcategory Code
+            return tourService.getToursBySubCategory(identifier);
+        }
     }
-    
+
     @GetMapping("/details/{catId}")
     public List<TourDTO> getToursForDetailsPage(
             @PathVariable Integer catId) {
         return tourService.getToursByCategoryId(catId);
+    }
+
+    @PostMapping("/by-category-ids")
+    public List<TourDTO> getToursByCategoryIds(@RequestBody List<Integer> ids) {
+        return tourService.getToursByCategoryIds(ids);
     }
 }

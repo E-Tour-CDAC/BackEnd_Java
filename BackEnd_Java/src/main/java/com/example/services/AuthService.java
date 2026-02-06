@@ -13,17 +13,27 @@ import com.example.mapper.CustomerMapper;
 import com.example.model.CustomerModel;
 import com.example.repositories.CustomerRepository;
 import com.example.util.JwtUtil;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 
 @Service
 public class AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String googleClientId;
 
     @Autowired
     private CustomerRepository repository;
@@ -40,8 +50,7 @@ public class AuthService {
     @Autowired
     private EmailService emailService;
 
-
-    //REGISTER (LOCAL)
+    // REGISTER (LOCAL)
     public CustomerModel register(CustomerDTO dto) {
         logger.info("Attempting to register user with email: {}", dto.getEmail());
 
@@ -70,8 +79,7 @@ public class AuthService {
         return model;
     }
 
-
-    //LOGIN (LOCAL)
+    // LOGIN (LOCAL)
     public String login(LoginDTO dto) {
 
         CustomerMaster user = repository.findByEmail(dto.getEmail())
@@ -88,8 +96,6 @@ public class AuthService {
         return jwtUtil.generateToken(user.getEmail(), user.getCustomerRole().name());
     }
 
-
-
     public void sendResetToken(String email) {
 
         CustomerMaster customerMaster = repository.findByEmail(email)
@@ -97,16 +103,14 @@ public class AuthService {
 
         String token = jwtUtil.generateResetToken(email);
 
-        String resetLink =
-                "http://localhost:5173/reset-password?token=" + token;
+        String resetLink = "http://localhost:5173/reset-password?token=" + token;
 
         emailService.sendSimpleEmail(
                 email,
                 "Reset Your Password",
                 "Click the link below to reset your password:\n\n" +
                         resetLink +
-                        "\n\nThis link is valid for 15 minutes."
-        );
+                        "\n\nThis link is valid for 15 minutes.");
     }
 
     public void resetPassword(ResetPasswordDTO dto) {
@@ -126,13 +130,8 @@ public class AuthService {
         emailService.sendSimpleEmail(
                 user.getEmail(),
                 "Password Updated",
-                "Your password has been successfully updated."
-        );
+                "Your password has been successfully updated.");
     }
-
-
-
-
 
     public CustomerModel getCustomerProfile(String email) {
         CustomerMaster customer = repository.findByEmail(email)
@@ -144,7 +143,7 @@ public class AuthService {
         return model;
     }
 
-    //update profile
+    // update profile
     public CustomerModel updateCustomerProfile(String email, CustomerDTO dto) {
 
         CustomerMaster customer = repository.findByEmail(email)
@@ -169,13 +168,62 @@ public class AuthService {
 
         return model;
     }
-    
+
     public CustomerIdDTO getCustomerIdByEmail(String email) {
 
         CustomerMaster customer = repository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
 
         return new CustomerIdDTO(customer.getId());
+    }
+
+    public void changePassword(String email, String oldPassword, String newPassword) {
+        CustomerMaster customer = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        if (!passwordEncoder.matches(oldPassword, customer.getPassword())) {
+            throw new RuntimeException("Invalid old password");
+        }
+
+        customer.setPassword(passwordEncoder.encode(newPassword));
+        repository.save(customer);
+    }
+
+    public String googleLogin(String idTokenString) {
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
+                    new GsonFactory())
+                    .setAudience(Collections.singletonList(googleClientId))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+            if (idToken != null) {
+                GoogleIdToken.Payload payload = idToken.getPayload();
+
+                String email = payload.getEmail();
+                String firstName = (String) payload.get("given_name");
+                String lastName = (String) payload.get("family_name");
+
+                CustomerMaster user = repository.findByEmail(email)
+                        .orElseGet(() -> {
+                            CustomerMaster u = new CustomerMaster();
+                            u.setEmail(email);
+                            u.setFirstName(firstName);
+                            u.setLastName(lastName);
+                            u.setCustomerRole(CustomerRole.CUSTOMER);
+                            u.setAuthProvider(AuthProvider.GOOGLE);
+                            u.setProfileCompleted(false);
+                            return repository.save(u);
+                        });
+
+                return jwtUtil.generateToken(user.getEmail(), user.getCustomerRole().name());
+            } else {
+                throw new RuntimeException("Invalid ID token.");
+            }
+        } catch (Exception e) {
+            logger.error("Error verifying Google token", e);
+            throw new RuntimeException("Google Sign-In failed");
+        }
     }
 
 }

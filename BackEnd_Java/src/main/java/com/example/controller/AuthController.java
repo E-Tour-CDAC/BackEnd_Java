@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.dto.CustomerDTO;
 import com.example.dto.ForgotPasswordDTO;
+import com.example.dto.GoogleLoginRequestDTO;
 import com.example.dto.LoginDTO;
 import com.example.dto.ResetPasswordDTO;
 import com.example.model.CustomerModel;
@@ -21,8 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
-public class    AuthController {
+@RequestMapping("/api/auth")
+public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
@@ -59,8 +60,7 @@ public class    AuthController {
         authService.sendResetToken(dto.getEmail());
 
         return ResponseEntity.ok(
-                "Password reset link has been sent to your email"
-        );
+                "Password reset link has been sent to your email");
     }
 
     @PostMapping("/reset-password")
@@ -72,15 +72,17 @@ public class    AuthController {
         authService.resetPassword(dto);
 
         return ResponseEntity.ok(
-                "Password has been reset successfully"
-        );
+                "Password has been reset successfully");
     }
 
+    @PostMapping("/google-login")
+    public ResponseEntity<Map<String, String>> googleLogin(@RequestBody GoogleLoginRequestDTO dto) {
+        logger.info("Attempting google login (ID Token verification)");
+        String token = authService.googleLogin(dto.getIdToken());
 
-
-    //DON'T TOUCH THIS IMP
-    //google login and register ROUTE
-    //http://localhost:8080/oauth2/authorization/google
-    ///oauth2/authorization/google     -- inbuild by spring security
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response);
+    }
 
 }

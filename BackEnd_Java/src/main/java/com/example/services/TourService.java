@@ -21,14 +21,11 @@ public interface TourService {
     List<TourDTO> getToursBySubCategory(String subCategoryCode);
 
     // ✅ REQUIRED FOR BOOKING
-    
 
     Integer getTourIdByCategoryAndDeparture(
             Integer categoryId,
-            Integer departureId
-    );
+            Integer departureId);
 
+    List<TourDTO> getToursByCategoryIds(List<Integer> categoryIds);
 
-    
-    
 }

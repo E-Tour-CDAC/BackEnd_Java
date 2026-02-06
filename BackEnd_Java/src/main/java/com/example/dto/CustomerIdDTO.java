@@ -1,23 +1,18 @@
 package com.example.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-
 public class CustomerIdDTO {
-    private Integer id;
+	private Integer customerId;
 
-	public Integer getId() {
-		return id;
+	public Integer getCustomerId() {
+		return customerId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
 	}
 
-	public CustomerIdDTO(Integer id) {
+	public CustomerIdDTO(Integer customerId) {
 		super();
-		this.id = id;
+		this.customerId = customerId;
 	}
 }
