@@ -56,9 +56,9 @@ class BookingControllerTest {
         req.setTourId(22);
         req.setStatusId(1);
 
-        mockMvc.perform(post("/api/bookings")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(req)))
+        mockMvc.perform(post("/api/Booking")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(req)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookingId").value(777));
     }
@@ -71,7 +71,7 @@ class BookingControllerTest {
 
         Mockito.when(bookingService.getBookingById(1001)).thenReturn(response);
 
-        mockMvc.perform(get("/api/bookings/1001"))
+        mockMvc.perform(get("/api/Booking/1001"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookingId").value(1001));
     }

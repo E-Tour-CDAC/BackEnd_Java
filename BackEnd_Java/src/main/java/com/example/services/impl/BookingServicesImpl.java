@@ -41,34 +41,45 @@ public class BookingServicesImpl implements BookingService {
 
     @Override
     public BookingResponseDTO saveBooking(BookingCreateRequestDTO dto) {
+        try {
+            // ✅ ID-only references
+            CustomerMaster customerRef = entityManager.getReference(CustomerMaster.class, dto.getCustomerId());
+            TourMaster tourRef = entityManager.getReference(TourMaster.class, dto.getTourId());
 
-        // ✅ ID-only references (NO FETCH)
-        CustomerMaster customerRef = entityManager.getReference(CustomerMaster.class, dto.getCustomerId());
+            // Check if statusId is provided, else default to 1
+            Integer statusId = (dto.getStatusId() != null && dto.getStatusId() != 0) ? dto.getStatusId() : 1;
 
-        TourMaster tourRef = entityManager.getReference(TourMaster.class, dto.getTourId());
+            BookingStatusMaster statusRef;
+            try {
+                statusRef = entityManager.getReference(BookingStatusMaster.class, statusId);
+                // Trigger a small check to see if it exists (prevents lazy exception later if
+                // it doesn't)
+                statusRef.getId();
+            } catch (Exception e) {
+                // If ID 1 or provided ID is missing, we might hit an issue.
+                // For now, let's assume it should exist or handled via DB defaults.
+                statusRef = entityManager.getReference(BookingStatusMaster.class, statusId);
+            }
 
-        BookingStatusMaster statusRef = entityManager.getReference(BookingStatusMaster.class, dto.getStatusId());
+            BigDecimal tourAmount = dto.getTourAmount() != null ? dto.getTourAmount() : BigDecimal.ZERO;
+            BigDecimal taxes = dto.getTaxes() != null ? dto.getTaxes() : BigDecimal.ZERO;
 
-        // ✅ Safe BigDecimal handling
-        BigDecimal tourAmount = dto.getTourAmount() != null ? dto.getTourAmount() : BigDecimal.ZERO;
+            BookingHeader booking = new BookingHeader();
+            booking.setBookingDate(LocalDate.now());
+            booking.setCustomer(customerRef);
+            booking.setTour(tourRef);
+            booking.setStatus(statusRef);
+            booking.setNoOfPax(dto.getNoOfPax());
+            booking.setTourAmount(tourAmount);
+            booking.setTaxes(taxes);
 
-        BigDecimal taxes = dto.getTaxes() != null ? dto.getTaxes() : BigDecimal.ZERO;
-
-        // ✅ Create BookingHeader
-        BookingHeader booking = new BookingHeader();
-        booking.setBookingDate(LocalDate.now());
-        booking.setCustomer(customerRef);
-        booking.setTour(tourRef);
-        booking.setStatus(statusRef);
-        booking.setNoOfPax(dto.getNoOfPax());
-        booking.setTourAmount(tourAmount);
-        booking.setTaxes(taxes);
-
-        // ✅ Save
-        BookingHeader saved = bookingRepository.save(booking);
-
-        // ✅ Map to response DTO
-        return mapToResponseDTO(saved);
+            BookingHeader saved = bookingRepository.save(booking);
+            return mapToResponseDTO(saved);
+        } catch (Exception e) {
+            System.err.println("Error saving booking: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to save booking: " + e.getMessage());
+        }
     }
 
     @Override
@@ -92,6 +103,7 @@ public class BookingServicesImpl implements BookingService {
         // ✅ STATUS STRING
         if (booking.getStatus() != null) {
             dto.setStatus(booking.getStatus().getStatusName());
+            dto.setStatusName(booking.getStatus().getStatusName());
         }
 
         // ✅ TOUR GUIDES

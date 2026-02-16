@@ -11,6 +11,7 @@ public class BookingResponseDTO {
     private Integer noOfPax;
     private BigDecimal totalAmount;
     private String status;
+    private String statusName;
     private List<TourGuideDTO> guides;
 
     // getters & setters
@@ -52,6 +53,14 @@ public class BookingResponseDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
     }
 
     public List<TourGuideDTO> getGuides() {
